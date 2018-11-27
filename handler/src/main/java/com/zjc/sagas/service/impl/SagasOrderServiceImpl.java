@@ -60,19 +60,19 @@ public class SagasOrderServiceImpl implements SagasOrderService {
         Assert.notNull(sagasOrder, "更新对象为空");
         Assert.notNull(sagasOrder.getOrderNo(), "更新对象orderNo为空");
 
-        return sagasOrderDao.updateById(sagasOrder);
+        return sagasOrderDao.updateByOrderNo(sagasOrder);
     }
 
     /**
      * 根据id查询处理
-     * @param id
+     * @param orderNo
      * @return
      */
     @Override
-    public SagasOrder selectById(Integer id) {
-        Assert.notNull(id, "查询记录id为空");
+    public SagasOrder selectByOrderNo(String orderNo) {
+        Assert.notNull(orderNo, "查询记录id为空");
 
-        return sagasOrderDao.selectById(id);
+        return sagasOrderDao.selectByOrderNo(orderNo);
     }
 
     /**

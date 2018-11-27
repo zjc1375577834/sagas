@@ -18,4 +18,9 @@ public class SagasDefaultHandler implements AnnotationHandler {
         ProcessStatusEnum processStatusEnum = processor.doCommit(context);
         return processStatusEnum;
     }
+
+    @Override
+    public ProcessStatusEnum rollbackHandler(SagasDate sagasDate) {
+        return null;
+    }
 }

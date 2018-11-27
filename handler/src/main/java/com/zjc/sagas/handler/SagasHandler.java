@@ -99,6 +99,19 @@ public class SagasHandler {
 
     }
     void processHandler(Map<String,Object> result,boolean isSend,boolean isOrder,SagasProcessOrder processOrder,AnnotationHandler handler,SagasDate sagasDate){
+       if(processOrder.getStatus().equals(ProcessStatusEnum.SUC.getType())) {
+           return;
+       }else if(processOrder.getStatus().equals(ProcessStatusEnum.FAIL.getType())) {
+           result.put("RING",MulStatusEnum.RING);
+           result.put("isSend",false);
+           return;
+       }else if(processOrder.getStatus().equals(ProcessStatusEnum.ING.getType())) {
+           if (isOrder) {
+               result.put("isSend",false);
+           }
+           result.put("ING",MulStatusEnum.ING);
+           return;
+       }
         if (isOrder) {
             ProcessStatusEnum processStatusEnum = null;
             if (isSend) {

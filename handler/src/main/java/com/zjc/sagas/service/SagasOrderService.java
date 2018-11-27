@@ -40,7 +40,7 @@ public interface SagasOrderService {
      * @param id
      * @return
      */
-    SagasOrder selectById(Integer id);
+    SagasOrder selectByOrderNo(String orderNo);
 
     /**
      * 根据id查询处理 加锁

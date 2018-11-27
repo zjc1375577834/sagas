@@ -126,7 +126,7 @@
         SELECT
         <include refid="_field_list"/>
         FROM `sagas_order`
-    WHERE `id` = #{id} limit 1 
+    WHERE `order_no` = #{orderNo} limit 1
     </select>
 
 

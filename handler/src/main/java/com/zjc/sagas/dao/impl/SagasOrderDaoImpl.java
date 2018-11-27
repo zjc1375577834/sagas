@@ -96,10 +96,10 @@ public class SagasOrderDaoImpl extends SqlSessionDaoSupport implements SagasOrde
      * @return
      */
     @Override
-    public SagasOrder selectById(Integer id) {
-        Assert.notNull(id, "查询记录id为空");
+    public SagasOrder selectByOrderNo(String  orderNo) {
+        Assert.notNull(orderNo, "查询记录id为空");
 
-        return getSqlSession().selectOne(generateStatement("selectById"), id);
+        return getSqlSession().selectOne(generateStatement("selectById"), orderNo);
     }
 
     /**

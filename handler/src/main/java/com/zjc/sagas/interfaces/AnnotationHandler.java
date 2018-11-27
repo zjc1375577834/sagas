@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface AnnotationHandler {
     ProcessStatusEnum handler(SagasDate sagasDate);
+    ProcessStatusEnum rollbackHandler(SagasDate sagasDate);
 }
