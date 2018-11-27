@@ -8,11 +8,12 @@ import com.zjc.sagas.interfaces.AnnotationHandler;
 import com.zjc.sagas.model.SagasDate;
 import com.zjc.sagas.model.SagasOrder;
 import com.zjc.sagas.model.SagasProcessOrder;
+import com.zjc.sagas.query.SagasProcessOrderQuery;
 import com.zjc.sagas.service.SagasOrderService;
 import com.zjc.sagas.service.SagasProcessOrderService;
 import com.zjc.sagas.utils.SeqCreateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +23,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * create by zjc on 18/11/26
  */
-@Component
+@Service
 public class SagasHandler {
-    private  Map<Integer, AnnotationHandler> map = new HashMap<>();
+    static  Map<Integer, AnnotationHandler> map = new HashMap<>();
     @Autowired
     private SagasOrderService sagasOrderService;
     @Autowired
@@ -36,16 +37,9 @@ public class SagasHandler {
         order.setParamHash(list.hashCode());
         order.setType(type);
         int insert = sagasOrderService.insert(order);
-        if (insert == 0) {
-            return MulStatusEnum.ING;
-        }
         int temp = 0;
-        MulStatusEnum mulStatusEnum = MulStatusEnum.SUC;
-        boolean isSend = true;
-        HashMap<String, Object> result = new HashMap<>();
-        for (SagasDate sagasDate : list) {
+        for(SagasDate sagasDate : list){
             temp++;
-            Sagas annotation = sagasDate.getClass().getAnnotation(Sagas.class);
             SagasProcessOrder processOrder = new SagasProcessOrder();
             processOrder.setClassName(sagasDate.getProcessor().getClass().getName());
             processOrder.setStatus(ProcessStatusEnum.INIT.getType());
@@ -56,6 +50,27 @@ public class SagasHandler {
             processOrder.setMothedName("doCommit");
             processOrder.setOrder(temp);
             sagasProcessOrderService.insert(processOrder);
+        }
+        if (insert == 0) {
+            return MulStatusEnum.ING;
+        }
+
+        MulStatusEnum mulStatusEnum = MulStatusEnum.SUC;
+        boolean isSend = true;
+        HashMap<String, Object> result = new HashMap<>();
+        temp = 0;
+        for (SagasDate sagasDate : list) {
+            temp++;
+            Sagas annotation = sagasDate.getClass().getAnnotation(Sagas.class);
+            SagasProcessOrder processOrder ;
+            SagasProcessOrderQuery query = new SagasProcessOrderQuery();
+            query.setOrderNo(orderNo);
+            query.setOrder(temp);
+            List<SagasProcessOrder> processOrders = sagasProcessOrderService.queryListByParam(query);
+            if (processOrders == null && processOrders.size() == 0) {
+                throw new IllegalArgumentException("流程异常");
+            }
+            processOrder = processOrders.get(0);
             AnnotationHandler handler = map.get(type);
             if (handler == null ) {
                 handler = new SagasDefaultHandler();
@@ -65,14 +80,14 @@ public class SagasHandler {
                 isSend = false;
             }
             Object status = result.get("ING");
-            if (status != null) {
+            if (status != null && mulStatusEnum == MulStatusEnum.SUC) {
                 mulStatusEnum = MulStatusEnum.ING;
             }
             Object ring = result.get("RING");
             if (ring != null) {
                 mulStatusEnum = MulStatusEnum.RING;
             }
-            this.processHandler(result,isSend,annotation.isOrder(),processOrder,mulStatusEnum,handler,sagasDate);
+            this.processHandler(result,isSend,annotation.isOrder(),processOrder,handler,sagasDate);
 
         }
         order.setStatus(mulStatusEnum.getType());
@@ -83,17 +98,18 @@ public class SagasHandler {
         return handler(list,orderNo,1);
 
     }
-    void processHandler(Map<String,Object> result,boolean isSend,boolean isOrder,SagasProcessOrder processOrder,MulStatusEnum mulStatusEnum,AnnotationHandler handler,SagasDate sagasDate){
+    void processHandler(Map<String,Object> result,boolean isSend,boolean isOrder,SagasProcessOrder processOrder,AnnotationHandler handler,SagasDate sagasDate){
         if (isOrder) {
             ProcessStatusEnum processStatusEnum = null;
             if (isSend) {
                 processStatusEnum = handler.handler(sagasDate);
                 if (ProcessStatusEnum.ING.equals(processStatusEnum)) {
-                    mulStatusEnum = MulStatusEnum.ING;
-                    isSend = false;
+                    result.put("isSend",false);
+                    result.put("ING",MulStatusEnum.ING);
+
                 }else if(ProcessStatusEnum.FAIL.equals(processStatusEnum)) {
-                    mulStatusEnum = MulStatusEnum.RING;
-                    isSend = false;
+                    result.put("RING",MulStatusEnum.RING);
+                    result.put("isSend",false);
                 }
                 processOrder.setStatus(processStatusEnum.getType());
                 sagasProcessOrderService.updateById(processOrder);
@@ -120,5 +136,6 @@ public class SagasHandler {
                 });
             }
         }
+
     }
 }
