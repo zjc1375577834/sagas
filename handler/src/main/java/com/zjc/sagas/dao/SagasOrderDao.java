@@ -1,6 +1,6 @@
 package com.zjc.sagas.dao;
 
-import com.zjc.sagas.Query.SagasOrderQuery;
+import com.zjc.sagas.query.SagasOrderQuery;
 import com.zjc.sagas.model.SagasOrder;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public interface SagasOrderDao {
      * @param sagasOrder
      * @return
      */
-    int updateById(SagasOrder sagasOrder);
+    int updateByOrderNo(SagasOrder sagasOrder);
 
     /**
      * 根据id查询处理

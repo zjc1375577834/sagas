@@ -32,4 +32,31 @@ public enum MulStatusEnum {
     public String getMsg() {
         return msg;
     }
+    public static MulStatusEnum getByMsg(String msg) {
+        for(MulStatusEnum baseEnum : MulStatusEnum.values()) {
+            if (baseEnum.msg.equals(msg)) {
+                return baseEnum;
+            }
+        }
+        throw new IllegalArgumentException("不存在这种枚举");
+
+    }
+    public static MulStatusEnum getByCode(String code) {
+        for(MulStatusEnum baseEnum : MulStatusEnum.values()) {
+            if (baseEnum.code.equals(code)) {
+                return baseEnum;
+            }
+        }
+        throw new IllegalArgumentException("不存在这种枚举");
+
+    }
+    public static MulStatusEnum getByType(Integer type) {
+        for(MulStatusEnum baseEnum : MulStatusEnum.values()) {
+            if (baseEnum.type.equals(type)) {
+                return baseEnum;
+            }
+        }
+        throw new IllegalArgumentException("不存在这种枚举");
+
+    }
 }

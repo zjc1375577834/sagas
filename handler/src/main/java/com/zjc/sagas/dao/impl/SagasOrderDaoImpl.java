@@ -2,7 +2,7 @@ package com.zjc.sagas.dao.impl;
 
 
 
-import com.zjc.sagas.Query.SagasOrderQuery;
+import com.zjc.sagas.query.SagasOrderQuery;
 import com.zjc.sagas.dao.SagasOrderDao;
 import com.zjc.sagas.model.SagasOrder;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
@@ -82,9 +82,9 @@ public class SagasOrderDaoImpl extends SqlSessionDaoSupport implements SagasOrde
      * @return
      */
     @Override
-    public int updateById(SagasOrder sagasOrder) {
+    public int updateByOrderNo(SagasOrder sagasOrder) {
         Assert.notNull(sagasOrder, "更新对象为空");
-        Assert.notNull(sagasOrder.getId(), "更新对象id为空");
+        Assert.notNull(sagasOrder.getOrderNo(), "更新对象orderNo为空");
         sagasOrder.setModifyTime(new Date());
 
         return getSqlSession().update(generateStatement("updateById"), sagasOrder);

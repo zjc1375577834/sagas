@@ -1,6 +1,4 @@
-package com.zjc.sagas.Query;
-
-import java.io.Serializable;
+package com.zjc.sagas.query;
 
 /**
 * 排序

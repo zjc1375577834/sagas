@@ -1,6 +1,6 @@
 package com.zjc.sagas.dao;
 
-import com.zjc.sagas.Query.SagasProcessOrderQuery;
+import com.zjc.sagas.query.SagasProcessOrderQuery;
 import com.zjc.sagas.model.SagasProcessOrder;
 
 import java.util.List;

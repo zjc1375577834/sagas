@@ -1,6 +1,7 @@
 package com.zjc.sagas.service;
 
-import com.zjc.sagas.Query.SagasProcessOrderQuery;
+import com.zjc.sagas.enums.ProcessStatusEnum;
+import com.zjc.sagas.query.SagasProcessOrderQuery;
 import com.zjc.sagas.model.SagasProcessOrder;
 
 import java.util.List;
@@ -62,5 +63,19 @@ public interface SagasProcessOrderService {
      * @return
      */
     Long queryCountByParam(SagasProcessOrderQuery sagasProcessOrderQuery);
+
+    /**
+     * 根据订单号查询过程单据
+     * @param orderNo
+     * @return
+     */
+    List<SagasProcessOrder> queryByOrderNo(String orderNo);
+
+    /**
+     * 根据订单状态查询过程单据
+     * @param statusEnum
+     * @return
+     */
+    List<SagasProcessOrder> queryByStatus(ProcessStatusEnum statusEnum);
 
 }

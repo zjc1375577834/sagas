@@ -48,9 +48,9 @@ public enum ProcessStatusEnum {
         throw new IllegalArgumentException("不存在这种枚举");
 
     }
-    public static ProcessStatusEnum getByInnerCode(Integer innerCode) {
+    public static ProcessStatusEnum getByType(Integer type) {
         for(ProcessStatusEnum baseEnum : ProcessStatusEnum.values()) {
-            if (baseEnum.code.equals(innerCode)) {
+            if (baseEnum.type.equals(type)) {
                 return baseEnum;
             }
         }

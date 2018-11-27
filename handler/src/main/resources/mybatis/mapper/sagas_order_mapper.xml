@@ -90,7 +90,7 @@
 
     <!-- 插入处理 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO `sagas_order`
+        INSERT ignore INTO `sagas_order`
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <include refid="_field_list"/>
         </trim>
@@ -118,7 +118,7 @@
             </if>
             `modify_time`=#{modifyTime}
         </trim>
-        WHERE `id` = #{id} limit 1 
+        WHERE `order_no` = #{orderNo} limit 1
     </update>
 
     <!-- 根据id查询处理 -->

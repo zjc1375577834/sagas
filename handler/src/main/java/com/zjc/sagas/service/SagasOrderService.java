@@ -1,7 +1,8 @@
 package com.zjc.sagas.service;
 
 
-import com.zjc.sagas.Query.SagasOrderQuery;
+import com.zjc.sagas.enums.MulStatusEnum;
+import com.zjc.sagas.query.SagasOrderQuery;
 import com.zjc.sagas.model.SagasOrder;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public interface SagasOrderService {
      * @param sagasOrder
      * @return
      */
-    int updateById(SagasOrder sagasOrder);
+    int updateByOrderNo(SagasOrder sagasOrder);
 
     /**
      * 根据id查询处理
@@ -63,5 +64,12 @@ public interface SagasOrderService {
      * @return
      */
     Long queryCountByParam(SagasOrderQuery sagasOrderQuery);
+
+    /**
+     * 根据订单状态查询订单
+     * @param mulStatusEnum
+     * @return
+     */
+    List<SagasOrder> queryByStatus(MulStatusEnum mulStatusEnum);
 
 }

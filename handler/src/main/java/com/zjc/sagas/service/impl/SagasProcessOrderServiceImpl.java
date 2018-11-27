@@ -1,19 +1,18 @@
 package com.zjc.sagas.service.impl;
 
 
-import com.zjc.sagas.inner.service.SagasProcessOrderService;
-import com.zjc.sagas.inner.dao.SagasProcessOrderDao;
-import com.zjc.sagas.facade.model.SagasProcessOrder;
+import com.zjc.sagas.dao.SagasProcessOrderDao;
 
-import com.zjc.sagas.facade.query.SagasProcessOrderQuery;
 
-import org.mybatis.spring.support.SqlSessionDaoSupport;
+import com.zjc.sagas.enums.ProcessStatusEnum;
+import com.zjc.sagas.model.SagasProcessOrder;
+import com.zjc.sagas.query.SagasProcessOrderQuery;
+import com.zjc.sagas.service.SagasProcessOrderService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -112,5 +111,15 @@ public class SagasProcessOrderServiceImpl implements SagasProcessOrderService {
         Assert.notNull(sagasProcessOrderQuery, "查询参数为空");
 
         return sagasProcessOrderDao.queryCountByParam(sagasProcessOrderQuery);
+    }
+
+    @Override
+    public List<SagasProcessOrder> queryByOrderNo(String orderNo) {
+        return null;
+    }
+
+    @Override
+    public List<SagasProcessOrder> queryByStatus(ProcessStatusEnum statusEnum) {
+        return null;
     }
 }

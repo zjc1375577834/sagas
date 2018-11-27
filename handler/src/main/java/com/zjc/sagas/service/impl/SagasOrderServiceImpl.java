@@ -3,17 +3,16 @@ package com.zjc.sagas.service.impl;
 
 
 
-import com.zjc.sagas.Query.SagasOrderQuery;
+import com.zjc.sagas.enums.MulStatusEnum;
+import com.zjc.sagas.query.SagasOrderQuery;
 import com.zjc.sagas.dao.SagasOrderDao;
 import com.zjc.sagas.model.SagasOrder;
 import com.zjc.sagas.service.SagasOrderService;
-import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,9 +56,9 @@ public class SagasOrderServiceImpl implements SagasOrderService {
      * @return
      */
     @Override
-    public int updateById(SagasOrder sagasOrder) {
+    public int updateByOrderNo(SagasOrder sagasOrder) {
         Assert.notNull(sagasOrder, "更新对象为空");
-        Assert.notNull(sagasOrder.getId(), "更新对象id为空");
+        Assert.notNull(sagasOrder.getOrderNo(), "更新对象orderNo为空");
 
         return sagasOrderDao.updateById(sagasOrder);
     }
@@ -112,5 +111,10 @@ public class SagasOrderServiceImpl implements SagasOrderService {
         Assert.notNull(sagasOrderQuery, "查询参数为空");
 
         return sagasOrderDao.queryCountByParam(sagasOrderQuery);
+    }
+
+    @Override
+    public List<SagasOrder> queryByStatus(MulStatusEnum mulStatusEnum) {
+        return null;
     }
 }

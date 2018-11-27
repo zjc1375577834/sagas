@@ -1,4 +1,4 @@
-package com.zjc.sagas.Query;
+package com.zjc.sagas.query;
 
 import java.io.Serializable;
 import java.util.Arrays;

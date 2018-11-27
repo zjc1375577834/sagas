@@ -1,7 +1,7 @@
 package com.zjc.sagas.dao.impl;
 
 
-import com.zjc.sagas.Query.SagasProcessOrderQuery;
+import com.zjc.sagas.query.SagasProcessOrderQuery;
 import com.zjc.sagas.dao.SagasProcessOrderDao;
 
 import com.zjc.sagas.model.SagasProcessOrder;

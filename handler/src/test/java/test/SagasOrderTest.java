@@ -1,7 +1,8 @@
 package test;
 
 
-import com.zjc.sagas.Query.SagasOrderQuery;
+import com.alibaba.fastjson.JSON;
+import com.zjc.sagas.query.SagasOrderQuery;
 import com.zjc.sagas.model.SagasOrder;
 import com.zjc.sagas.service.SagasOrderService;
 import org.junit.Test;
