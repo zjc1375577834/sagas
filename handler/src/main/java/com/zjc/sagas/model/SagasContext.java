@@ -6,6 +6,7 @@ package com.zjc.sagas.model;
 public class SagasContext<T> {
     private T param;
 
+
     public T getParam() {
         return param;
     }

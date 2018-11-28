@@ -9,9 +9,7 @@ public enum ProcessStatusEnum {
     ING("ING",2,"处理中"),
     FAIL("FAIL",3,"失败"),
     NOBEGIN("NOBEGIN",4,"订单未发送成功"),
-    RSUC("RSUC",5,"回滚成功"),
-    RFAIL("RFAIL",6,"回滚失败"),
-    RING("RING",7,"回滚处理中"),
+
 
             ;
     private String code;

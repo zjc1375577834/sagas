@@ -17,7 +17,7 @@ public interface SagasProcessor {
      * @param context
      * @return
      */
-    ProcessStatusEnum CommitQuery(SagasContext context);
+    ProcessStatusEnum commitQuery(SagasContext context);
 
     /**
      * 流程回滚方法
@@ -31,5 +31,5 @@ public interface SagasProcessor {
      * @param context
      * @return
      */
-    ProcessStatusEnum CancelQuery(SagasContext context);
+    ProcessStatusEnum cancelQuery(SagasContext context);
 }

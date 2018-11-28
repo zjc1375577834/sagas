@@ -7,9 +7,10 @@ public enum MulStatusEnum {
     INIT("INIT",0,"初始化"),
     SUC("SUCCESS",1,"成功"),
     ING("ING",2,"处理中"),
-    RING("RING",3,"会滚处理中"),
-    FAIL("FAIL",4,"失败"),
-    RFAIL("RFAIL",5,"会滚失败")
+    ROLL("ROLL",3,"回滚中"),
+    RING("RING",4,"会滚处理中"),
+    FAIL("FAIL",5,"失败"),
+    RFAIL("RFAIL",6,"会滚失败")
 
     ;
     private String code;

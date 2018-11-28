@@ -98,7 +98,7 @@ public class SagasExceptionHandler {
                 SagasDate sagasDate = list.get(i);
                 SagasProcessor processor = sagasDate.getProcessor();
                 SagasContext context = sagasDate.getContext();
-                ProcessStatusEnum query = processor.CommitQuery(context);
+                ProcessStatusEnum query = processor.commitQuery(context);
                 processOrder.setStatus(query.getType());
                 sagasProcessOrderService.updateById(processOrder);
                 if (query.equals(ProcessStatusEnum.ING)){
@@ -179,7 +179,7 @@ public class SagasExceptionHandler {
                 throw new IllegalArgumentException("PROCESS异常");
             }
             if (processOrder.getStatus() == ProcessStatusEnum.ING.getType()) {
-                ProcessStatusEnum processStatusEnum = sagasDate.getProcessor().CommitQuery(sagasDate.getContext());
+                ProcessStatusEnum processStatusEnum = sagasDate.getProcessor().commitQuery(sagasDate.getContext());
                 processOrder.setStatus(processStatusEnum.getType());
                 sagasProcessOrderService.updateById(processOrder);
                 if (processStatusEnum.equals(ProcessStatusEnum.SUC)) {
@@ -197,7 +197,7 @@ public class SagasExceptionHandler {
                 sagasOrderService.updateByOrderNo(sagasOrder);
                 return MulStatusEnum.RFAIL;
             }else if(processOrder.getStatus() == ProcessStatusEnum.RING.getType()) {
-                ProcessStatusEnum processStatusEnum = processor.CancelQuery(context);
+                ProcessStatusEnum processStatusEnum = processor.cancelQuery(context);
                 processOrder.setStatus(processStatusEnum.getType());
                 sagasProcessOrderService.updateById(processOrder);
                 if (processStatusEnum.equals(ProcessStatusEnum.RING)) {
@@ -209,7 +209,7 @@ public class SagasExceptionHandler {
                     sagasOrderService.updateByOrderNo(sagasOrder);
                     return MulStatusEnum.RFAIL;
                 }else if(processStatusEnum.equals(ProcessStatusEnum.NOBEGIN)){
-                    ProcessStatusEnum anEnum = processor.CancelQuery(context);
+                    ProcessStatusEnum anEnum = processor.cancelQuery(context);
                     return this.ringHandler(list,orderNo,type);
                 }
             } else if (processOrder.getStatus() == ProcessStatusEnum.FAIL.getType()) {
