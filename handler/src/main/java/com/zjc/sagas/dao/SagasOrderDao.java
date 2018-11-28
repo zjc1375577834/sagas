@@ -32,7 +32,7 @@ public interface SagasOrderDao {
      * @param sagasOrder
      * @return
      */
-    int updateByOrderNo(SagasOrder sagasOrder);
+    int updateByOrderNo(SagasOrder sagasOrder,Integer status);
 
     /**
      * 根据id查询处理

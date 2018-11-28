@@ -32,14 +32,14 @@ public interface SagasProcessOrderDao {
      * @param sagasProcessOrder
      * @return
      */
-    int updateById(SagasProcessOrder sagasProcessOrder);
+    int updateById(SagasProcessOrder sagasProcessOrder,Integer status);
 
     /**
      * 根据id查询处理
      * @param id
      * @return
      */
-    SagasProcessOrder selectById(Integer id);
+    SagasProcessOrder  selectByOrderNoAndOrder(String orderNo,Integer order);
 
     /**
      * 根据id查询处理 加锁

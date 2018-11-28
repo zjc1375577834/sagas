@@ -11,7 +11,9 @@ import org.springframework.util.Assert;
 
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * SagasProcessOrderDao 实现类
@@ -86,12 +88,14 @@ public class SagasProcessOrderDaoImpl extends SqlSessionDaoSupport implements Sa
      * @return
      */
     @Override
-    public int updateById(SagasProcessOrder sagasProcessOrder) {
+    public int updateById(SagasProcessOrder sagasProcessOrder,Integer status) {
         Assert.notNull(sagasProcessOrder, "更新对象为空");
-        Assert.notNull(sagasProcessOrder.getId(), "更新对象id为空");
+        Assert.notNull(sagasProcessOrder.getProcessNo(), "更新对象id为空");
         sagasProcessOrder.setModifyTime(new Date());
-
-        return getSqlSession().update(generateStatement("updateById"), sagasProcessOrder);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("sagasProcessOrder",sagasProcessOrder);
+        map.put("olderStatus",status);
+        return getSqlSession().update(generateStatement("updateById"), map);
     }
 
     /**
@@ -100,10 +104,15 @@ public class SagasProcessOrderDaoImpl extends SqlSessionDaoSupport implements Sa
      * @return
      */
     @Override
-    public SagasProcessOrder selectById(Integer id) {
-        Assert.notNull(id, "查询记录id为空");
+    public SagasProcessOrder selectByOrderNoAndOrder(String orderNo,Integer order) {
+        Assert.notNull(orderNo, "更新对象为空");
+        Assert.notNull(order, "更新对象为空");
 
-        return getSqlSession().selectOne(generateStatement("selectById"), id);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("orderNo",orderNo);
+        map.put("order",order);
+
+        return getSqlSession().selectOne(generateStatement("selectById"), map);
     }
 
     /**

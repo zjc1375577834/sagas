@@ -125,44 +125,44 @@
     </insert>
 
     <!-- 根据id更新处理 -->
-    <update id="updateById">
+    <update id="updateById" parameterType="java.util.Map">
         UPDATE `sagas_process_order`
         <trim prefix="set" suffixOverrides=",">
-            <if test="orderNo != null">
-                `order_no`=#{orderNo},
+            <if test="sagasProcessOrder.orderNo != null">
+                `order_no`=#{sagasProcessOrder.orderNo},
             </if>
-            <if test="processNo != null">
-                `process_no`=#{processNo},
+            <if test="sagasProcessOrder.processNo != null">
+                `process_no`=#{sagasProcessOrder.processNo},
             </if>
-            <if test="param != null">
-                `param`=#{param},
+            <if test="sagasProcessOrder.param != null">
+                `param`=#{sagasProcessOrder.param},
             </if>
-            <if test="className != null">
-                `class_name`=#{className},
+            <if test="sagasProcessOrder.className != null">
+                `class_name`=#{sagasProcessOrder.className},
             </if>
-            <if test="mothedName != null">
-                `mothed_name`=#{mothedName},
+            <if test="sagasProcessOrder.mothedName != null">
+                `mothed_name`=#{sagasProcessOrder.mothedName},
             </if>
-            <if test="status != null">
-                `status`=#{status},
+            <if test="sagasProcessOrder.status != null">
+                `status`=#{sagasProcessOrder.status},
             </if>
-            <if test="order != null">
-                `order`=#{order},
+            <if test="sagasProcessOrder.order != null">
+                `order`=#{sagasProcessOrder.order},
             </if>
-            <if test="reSend != null">
-                `re_send`=#{reSend},
+            <if test="sagasProcessOrder.reSend != null">
+                `re_send`=#{sagasProcessOrder.reSend},
             </if>
-            `modify_time`=#{modifyTime}
+            `modify_time`=#{sagasProcessOrder.modifyTime}
         </trim>
-        WHERE `id` = #{id} limit 1 
+        WHERE `process_no` = #{sagasProcessOrder.processNo} and `status` = #{olderStatus} limit 1
     </update>
 
     <!-- 根据id查询处理 -->
-    <select id="selectById" resultMap="SagasProcessOrderMap">
+    <select id="selectById" resultMap="SagasProcessOrderMap" parameterType="java.util.Map">
         SELECT
         <include refid="_field_list"/>
         FROM `sagas_process_order`
-    WHERE `id` = #{id} limit 1 
+    WHERE `order_no` = #{orderNo} and `order` = #{order} limit 1
     </select>
 
 

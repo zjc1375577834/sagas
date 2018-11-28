@@ -101,24 +101,24 @@
     </insert>
 
     <!-- 根据id更新处理 -->
-    <update id="updateById">
+    <update id="updateById" parameterType="java.util.Map">
         UPDATE `sagas_order`
         <trim prefix="set" suffixOverrides=",">
-            <if test="orderNo != null">
-                `order_no`=#{orderNo},
+            <if test="sagasOrder.orderNo != null">
+                `order_no`=#{sagasOrder.orderNo},
             </if>
-            <if test="status != null">
-                `status`=#{status},
+            <if test="sagasOrder.status != null">
+                `status`=#{sagasOrder.status},
             </if>
-            <if test="paramHash != null">
-                `param_hash`=#{paramHash},
+            <if test="sagasOrder.paramHash != null">
+                `param_hash`=#{sagasOrder.paramHash},
             </if>
-            <if test="type != null">
-                `type`=#{type},
+            <if test="sagasOrder.type != null">
+                `type`=#{sagasOrder.type},
             </if>
-            `modify_time`=#{modifyTime}
+            `modify_time`=#{sagasOrder.modifyTime}
         </trim>
-        WHERE `order_no` = #{orderNo} limit 1
+        WHERE `order_no` = #{sagasOrder.orderNo} and `status` = #{olderStatus} limit 1
     </update>
 
     <!-- 根据id查询处理 -->

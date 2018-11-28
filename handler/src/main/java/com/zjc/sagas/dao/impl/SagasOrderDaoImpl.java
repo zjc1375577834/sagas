@@ -11,7 +11,9 @@ import org.springframework.util.Assert;
 
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * SagasOrderDao 实现类
@@ -82,12 +84,14 @@ public class SagasOrderDaoImpl extends SqlSessionDaoSupport implements SagasOrde
      * @return
      */
     @Override
-    public int updateByOrderNo(SagasOrder sagasOrder) {
+    public int updateByOrderNo(SagasOrder sagasOrder,Integer status) {
         Assert.notNull(sagasOrder, "更新对象为空");
         Assert.notNull(sagasOrder.getOrderNo(), "更新对象orderNo为空");
         sagasOrder.setModifyTime(new Date());
-
-        return getSqlSession().update(generateStatement("updateById"), sagasOrder);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("sagasOrder",sagasOrder);
+        map.put("olderStatus",status);
+        return getSqlSession().update(generateStatement("updateById"), map);
     }
 
     /**

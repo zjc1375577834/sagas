@@ -33,7 +33,7 @@ public interface SagasOrderService {
      * @param sagasOrder
      * @return
      */
-    int updateByOrderNo(SagasOrder sagasOrder);
+    int updateByOrderNoAndStatus(SagasOrder sagasOrder,Integer status);
 
     /**
      * 根据id查询处理

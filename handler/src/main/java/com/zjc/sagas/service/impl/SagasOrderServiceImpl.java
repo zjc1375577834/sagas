@@ -56,11 +56,11 @@ public class SagasOrderServiceImpl implements SagasOrderService {
      * @return
      */
     @Override
-    public int updateByOrderNo(SagasOrder sagasOrder) {
+    public int updateByOrderNoAndStatus(SagasOrder sagasOrder, Integer status) {
         Assert.notNull(sagasOrder, "更新对象为空");
         Assert.notNull(sagasOrder.getOrderNo(), "更新对象orderNo为空");
 
-        return sagasOrderDao.updateByOrderNo(sagasOrder);
+        return sagasOrderDao.updateByOrderNo(sagasOrder,status);
     }
 
     /**

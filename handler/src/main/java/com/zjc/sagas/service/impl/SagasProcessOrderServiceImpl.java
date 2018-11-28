@@ -56,23 +56,24 @@ public class SagasProcessOrderServiceImpl implements SagasProcessOrderService {
      * @return
      */
     @Override
-    public int updateById(SagasProcessOrder sagasProcessOrder) {
+    public int updateByProcessNoAndStatus(SagasProcessOrder sagasProcessOrder,Integer status) {
         Assert.notNull(sagasProcessOrder, "更新对象为空");
         Assert.notNull(sagasProcessOrder.getId(), "更新对象id为空");
 
-        return sagasProcessOrderDao.updateById(sagasProcessOrder);
+        return sagasProcessOrderDao.updateById(sagasProcessOrder,status);
     }
 
     /**
      * 根据id查询处理
-     * @param id
+     * @param
      * @return
      */
     @Override
-    public SagasProcessOrder selectById(Integer id) {
-        Assert.notNull(id, "查询记录id为空");
+    public SagasProcessOrder selectByOrderNoAndOrder(String orderNo,Integer order) {
+        Assert.notNull(order, "查询记录order为空");
+        Assert.notNull(orderNo, "查询记录orderNo为空");
 
-        return sagasProcessOrderDao.selectById(id);
+        return sagasProcessOrderDao.selectByOrderNoAndOrder(orderNo,order);
     }
 
     /**
