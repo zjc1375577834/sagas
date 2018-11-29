@@ -13,4 +13,9 @@ public class SagasNotByOrderHandler implements AnnotationHandler {
     public ProcessStatusEnum handler(SagasDate sagasDate) {
         return null;
     }
+
+    @Override
+    public ProcessStatusEnum rollbackHandler(SagasDate sagasDate) {
+        return null;
+    }
 }

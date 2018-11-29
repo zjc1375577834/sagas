@@ -12,12 +12,14 @@ import com.zjc.sagas.service.SagasOrderService;
 import com.zjc.sagas.service.SagasProcessOrderService;
 import com.zjc.sagas.utils.ContextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
 /**
  * create by zjc on 18/11/29
  */
+@Service
 public class SagasAsynCommitHandler implements ProcessorCommit {
     @Autowired
     private SagasOrderService sagasOrderService;
