@@ -55,7 +55,7 @@ public interface ProcessorCommit {
     void ringRollBack(String orderNo, Integer order, Map<String,Object> result);
 
     /**
-     * 订单未发送成执行回滚方法
+     * 订单回滚未发送成执行回滚方法
      * @param orderNo
      * @param order
      * @param result

@@ -13,7 +13,7 @@ public interface SagasProcessor {
     ProcessStatusEnum doCommit(SagasContext context);
 
     /**
-     * 执行结果查询方法
+     * 执行结果查询方法  查询时候需要加查询条件判断，如果当前订单修改时间小于五（可以人为控制大小）分钟，则返回处理中
      * @param context
      * @return
      */
@@ -27,7 +27,7 @@ public interface SagasProcessor {
     ProcessStatusEnum doCancel(SagasContext context);
 
     /**
-     * 流程会滚方法执行结果查询
+     * 流程会滚方法执行结果查询 如果当前订单修改时间小于五分钟，则返回处理中
      * @param context
      * @return
      */

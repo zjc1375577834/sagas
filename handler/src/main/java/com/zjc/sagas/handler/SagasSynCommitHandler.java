@@ -13,12 +13,13 @@ import com.zjc.sagas.service.SagasProcessOrderService;
 import com.zjc.sagas.utils.ContextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * create by zjc in 2018/11/28 0028
  */
-public class SagasDirectCommitHandler implements ProcessorCommit {
+public class SagasSynCommitHandler implements ProcessorCommit {
     @Autowired
     private SagasOrderService sagasOrderService;
     @Autowired
@@ -37,13 +38,18 @@ public class SagasDirectCommitHandler implements ProcessorCommit {
         SagasDate sagasDate = ContextUtils.get(orderNo, order);
         SagasProcessor processor = sagasDate.getProcessor();
         SagasContext context = sagasDate.getContext();
+        sagasProcessOrder.setStatus(ProcessStatusEnum.ING.getType());
+        int j = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder,status );
+        if(j == 0) {
+            return;
+        }
         ProcessStatusEnum processStatusEnum = processor.doCommit(context);
         sagasProcessOrder.setStatus(processStatusEnum.getType());
 //        如果并发了，则以先到的为准
-        int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);
+        int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, ProcessStatusEnum.ING.getType());
         if (i==1) {
             if (processStatusEnum.equals(ProcessStatusEnum.SUC)) {
-                result.put("isSend", true);
+//                result.put("isSend", true);
             } else if (processStatusEnum.equals(ProcessStatusEnum.ING)) {
                 result.put("isSend", false);
                 result.put("status", MulStatusEnum.ING);
@@ -77,7 +83,7 @@ public class SagasDirectCommitHandler implements ProcessorCommit {
 //        并发先到为准
         if ( i == 1) {
             if (processStatusEnum.equals(ProcessStatusEnum.SUC)) {
-                result.put("isSend", true);
+//                result.put("isSend", true);
             } else if (processStatusEnum.equals(ProcessStatusEnum.ING)) {
                 result.put("isSend", false);
                 result.put("status", MulStatusEnum.ING);
@@ -203,7 +209,7 @@ public class SagasDirectCommitHandler implements ProcessorCommit {
         int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);
         if (i == 1){
             if (processStatusEnum.equals(ProcessStatusEnum.SUC)) {
-                result.put("isSend",true);
+//                result.put("isSend",true);
                 result.put("status",MulStatusEnum.ROLL);
             }else if (processStatusEnum.equals(ProcessStatusEnum.FAIL)) {
                 result.put("isSend",false);
@@ -226,14 +232,29 @@ public class SagasDirectCommitHandler implements ProcessorCommit {
         }
         SagasProcessOrder sagasProcessOrder = sagasProcessOrderService.selectByOrderNoAndOrder(orderNo, order);
         Integer status = sagasProcessOrder.getStatus();
-        if (!sagasProcessOrder.getMothedName().equals("doCancel") || status != ProcessStatusEnum.INIT.getType()) {
+        if (!sagasProcessOrder.getMothedName().equals("doCancel") || status != ProcessStatusEnum.INIT.getType() && status != ProcessStatusEnum.NOBEGIN.getType()) {
             throw new IllegalArgumentException("订单状态不合法");
         }
-        sagasProcessOrder.setStatus(ProcessStatusEnum.SUC.getType());
-        sagasProcessOrder.setMothedName("doCancel");
-        sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder,status);
-        result.put("status",MulStatusEnum.ROLL);
-        result.put("isSend",true);
+        SagasDate sagasDate = ContextUtils.get(orderNo,order);
+        SagasProcessor processor = sagasDate.getProcessor();
+        SagasContext context = sagasDate.getContext();
+        ProcessStatusEnum processStatusEnum = processor.doCancel(context);
+        sagasProcessOrder.setStatus(processStatusEnum.getType());
+        int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);
+        if (i == 1) {
+            if (processStatusEnum.equals(ProcessStatusEnum.SUC)) {
+                result.put("status",MulStatusEnum.ROLL);
+            }else if(processStatusEnum.equals(ProcessStatusEnum.ING)){
+                result.put("status",MulStatusEnum.RING);
+                result.put("isSend",false);
+            }else if(processStatusEnum.equals(ProcessStatusEnum.FAIL)){
+                result.put("status",MulStatusEnum.RFAIL);
+                result.put("isSend",false);
+                this.rfailRollBack(orderNo,order,result);
+            }else {
+                throw new IllegalArgumentException("订单状态异常");
+            }
+        }
     }
 
     @Override
