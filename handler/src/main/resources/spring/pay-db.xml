@@ -18,7 +18,7 @@
         <property name="dataSource" ref="investorDataSource"/>
     </bean>
     <!--事务-->
-    <tx:annotation-driven transaction-manager="investorTransactionManager"/>
+    <!--<tx:annotation-driven transaction-manager="investorTransactionManager"/>-->
 
     <!-- 创建SqlSessionFactory，同时指定数据源 -->
     <bean id="investorSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
