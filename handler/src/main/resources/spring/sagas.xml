@@ -22,7 +22,7 @@
 		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true"></property>
 	</bean> -->
-	<import resource="classpath:/spring/pay-db.xml" />
+	<import resource="classpath:/spring/sagas-db.xml" />
 
 
 

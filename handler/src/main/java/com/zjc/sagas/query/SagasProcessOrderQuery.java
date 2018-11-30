@@ -1,6 +1,5 @@
 package com.zjc.sagas.query;
 
-import com.tongbanjie.xd.commons.qo.BaseQO;
 import java.util.Date;
 
 /**
