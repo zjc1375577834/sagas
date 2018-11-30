@@ -21,6 +21,26 @@ public class SagasDefaultHandler implements AnnotationHandler {
 
     @Override
     public ProcessStatusEnum rollbackHandler(SagasDate sagasDate) {
-        return null;
+        SagasContext context = sagasDate.getContext();
+        SagasProcessor processor = sagasDate.getProcessor();
+        ProcessStatusEnum processStatusEnum = processor.doCancel(context);
+        return processStatusEnum;
+    }
+
+    @Override
+    public ProcessStatusEnum handlerQuery(SagasDate sagasDate) {
+        SagasContext context = sagasDate.getContext();
+        SagasProcessor processor = sagasDate.getProcessor();
+        ProcessStatusEnum processStatusEnum = processor.commitQuery(context);
+        return processStatusEnum;
+    }
+
+    @Override
+    public ProcessStatusEnum rollbackQuery(SagasDate sagasDate) {
+        SagasContext context = sagasDate.getContext();
+        SagasProcessor processor = sagasDate.getProcessor();
+        ProcessStatusEnum processStatusEnum = processor.cancelQuery(context);
+        return processStatusEnum;
+
     }
 }

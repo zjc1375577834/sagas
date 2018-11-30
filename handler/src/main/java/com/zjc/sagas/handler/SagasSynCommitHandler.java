@@ -26,6 +26,8 @@ public class SagasSynCommitHandler implements ProcessorCommit {
     private SagasOrderService sagasOrderService;
     @Autowired
     private SagasProcessOrderService sagasProcessOrderService;
+    @Autowired
+    private AnnotationDistribute annotationDistribute;
     @Override
     public void initCommit(String orderNo, Integer order, Map<String, Object> result) {
         SagasOrder sagasOrder = sagasOrderService.selectByOrderNo(orderNo);
@@ -38,14 +40,13 @@ public class SagasSynCommitHandler implements ProcessorCommit {
             throw new IllegalArgumentException("订单状态不合法");
         }
         SagasDate sagasDate = ContextUtils.get(orderNo, order);
-        SagasProcessor processor = sagasDate.getProcessor();
-        SagasContext context = sagasDate.getContext();
         sagasProcessOrder.setStatus(ProcessStatusEnum.ING.getType());
         int j = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder,status );
         if(j == 0) {
             return;
         }
-        ProcessStatusEnum processStatusEnum = processor.doCommit(context);
+
+        ProcessStatusEnum processStatusEnum = annotationDistribute.handler(sagasDate);
         sagasProcessOrder.setStatus(processStatusEnum.getType());
 //        如果并发了，则以先到的为准
         int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, ProcessStatusEnum.ING.getType());
@@ -60,7 +61,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
                 result.put("status", MulStatusEnum.ROLL);
                 this.failRollBack(orderNo,order,result);
             } else {
-                throw new IllegalArgumentException("订单状态异常");
+                this.initCommit(orderNo,order,result);
             }
         }
     }
@@ -77,9 +78,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
             throw new IllegalArgumentException("订单状态不合法");
         }
         SagasDate sagasDate = ContextUtils.get(orderNo, order);
-        SagasProcessor processor = sagasDate.getProcessor();
-        SagasContext context = sagasDate.getContext();
-        ProcessStatusEnum processStatusEnum = processor.commitQuery(context);
+        ProcessStatusEnum processStatusEnum = annotationDistribute.handlerQuery(sagasDate);
         sagasProcessOrder.setStatus(processStatusEnum.getType());
         int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);
 //        并发先到为准
@@ -93,7 +92,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
                 result.put("isSend", false);
                 result.put("status", MulStatusEnum.ROLL);
                 this.failRollBack(orderNo,order,result);
-            } else if(processStatusEnum.equals(ProcessStatusEnum.NOBEGIN)){
+            } else if(processStatusEnum.equals(ProcessStatusEnum.NOBEGIN) || ProcessStatusEnum.INIT.equals(processStatusEnum)){
                 this.initCommit(orderNo,order,result);
             }else {
                 throw new IllegalArgumentException("订单状态异常");
@@ -133,9 +132,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
             throw new IllegalArgumentException("订单状态不合法");
         }
         SagasDate sagasDate = ContextUtils.get(orderNo, order);
-        SagasProcessor processor = sagasDate.getProcessor();
-        SagasContext context = sagasDate.getContext();
-        ProcessStatusEnum processStatusEnum = processor.doCancel(context);
+        ProcessStatusEnum processStatusEnum = annotationDistribute.rollbackHandler(sagasDate);
         sagasProcessOrder.setStatus(processStatusEnum.getType());
         sagasProcessOrder.setMothedName("doCancel");
         int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);
@@ -150,7 +147,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
                 result.put("isSend",false);
                 this.rfailRollBack(orderNo,order,result);
             }else {
-                throw new IllegalArgumentException("订单状态异常");
+                this.rinitRollBack(orderNo,order,result);
             }
         }
     }
@@ -173,16 +170,14 @@ public class SagasSynCommitHandler implements ProcessorCommit {
             throw new IllegalArgumentException("订单状态不合法");
         }
         SagasDate sagasDate = ContextUtils.get(orderNo, order);
-        SagasProcessor processor = sagasDate.getProcessor();
-        SagasContext context = sagasDate.getContext();
-        ProcessStatusEnum processStatusEnum = processor.commitQuery(context);
+        ProcessStatusEnum processStatusEnum = annotationDistribute.handlerQuery(sagasDate);
         sagasProcessOrder.setStatus(processStatusEnum.getType());
         sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder,status);
         if (processStatusEnum.equals(ProcessStatusEnum.SUC)) {
             this.sucRollBack(orderNo,order,result);
         }else if(processStatusEnum.equals(ProcessStatusEnum.FAIL)){
             this.failRollBack(orderNo,order,result);
-        }else if(processStatusEnum.equals(ProcessStatusEnum.NOBEGIN)) {
+        }else if(processStatusEnum.equals(ProcessStatusEnum.NOBEGIN) || ProcessStatusEnum.INIT.equals(processStatusEnum)) {
             this.failRollBack(orderNo,order,result);
         }else if(processStatusEnum.equals(ProcessStatusEnum.ING)) {
             result.put("isSend",false);
@@ -204,9 +199,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
             throw new IllegalArgumentException("订单状态不合法");
         }
         SagasDate sagasDate = ContextUtils.get(orderNo, order);
-        SagasProcessor processor = sagasDate.getProcessor();
-        SagasContext context = sagasDate.getContext();
-        ProcessStatusEnum processStatusEnum = processor.cancelQuery(context);
+        ProcessStatusEnum processStatusEnum = annotationDistribute.rollbackQuery(sagasDate);
         sagasProcessOrder.setStatus(processStatusEnum.getType());
         int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);
         if (i == 1){
@@ -220,7 +213,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
             }else if(processStatusEnum.equals(ProcessStatusEnum.ING)){
                 result.put("isSend",false);
                 result.put("status",MulStatusEnum.RING);
-            }else if(processStatusEnum.equals(ProcessStatusEnum.NOBEGIN)) {
+            }else if(processStatusEnum.equals(ProcessStatusEnum.NOBEGIN) || ProcessStatusEnum.INIT.equals(processStatusEnum)) {
                 this.sucRollBack(orderNo,order,result);
             }
         }
@@ -238,9 +231,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
             throw new IllegalArgumentException("订单状态不合法");
         }
         SagasDate sagasDate = ContextUtils.get(orderNo,order);
-        SagasProcessor processor = sagasDate.getProcessor();
-        SagasContext context = sagasDate.getContext();
-        ProcessStatusEnum processStatusEnum = processor.doCancel(context);
+        ProcessStatusEnum processStatusEnum = annotationDistribute.rollbackHandler(sagasDate);
         sagasProcessOrder.setStatus(processStatusEnum.getType());
         int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);
         if (i == 1) {
@@ -254,7 +245,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
                 result.put("isSend",false);
                 this.rfailRollBack(orderNo,order,result);
             }else {
-                throw new IllegalArgumentException("订单状态异常");
+                this.rinitRollBack(orderNo,order,result);
             }
         }
     }
