@@ -40,7 +40,6 @@ public class SagasInsertOrder {
         }
         int temp = 0;
         for(SagasDate sagasDate : list){
-            temp++;
             SagasProcessOrder processOrder = new SagasProcessOrder();
             processOrder.setClassName(sagasDate.getProcessor().getClass().getName());
             processOrder.setStatus(ProcessStatusEnum.INIT.getType());
@@ -50,7 +49,9 @@ public class SagasInsertOrder {
             processOrder.setOrderNo(orderNo);
             processOrder.setMothedName("doCommit");
             processOrder.setOrder(temp);
+            processOrder.setCreateTime(new Date());
             sagasProcessOrderService.insert(processOrder);
+            temp++;
         }
         ContextUtils.put(orderNo,list);
         return true;

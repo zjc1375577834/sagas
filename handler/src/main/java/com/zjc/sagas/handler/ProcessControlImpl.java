@@ -85,7 +85,7 @@ public class ProcessControlImpl implements ProcessControl {
         }
         sagasOrder.setStatus(resultEnum.getType());
         sagasOrderService.updateByOrderNoAndStatus(sagasOrder,anEnum.getType());
-        return anEnum;
+        return resultEnum;
     }
     private boolean getAnnotion(SagasDate sagasDate) {
         Class<? extends SagasProcessor> aClass = sagasDate.getProcessor().getClass();

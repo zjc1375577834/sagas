@@ -1,5 +1,6 @@
 package test;
 
+import com.zjc.sagas.enums.MulStatusEnum;
 import com.zjc.sagas.handler.SagasHandler;
 import com.zjc.sagas.model.SagasContext;
 import com.zjc.sagas.model.SagasDate;
@@ -23,7 +24,8 @@ public class Demo {
         sagasDates.add(getSagasDate(true));
         sagasDates.add(getSagasDate(true));
         sagasDates.add(getSagasDate(true));
-        sagasHandler.handler(sagasDates, SeqCreateUtil.create("ceshi"),1);
+        MulStatusEnum ceshi = sagasHandler.handler(sagasDates, SeqCreateUtil.create("ceshi"), 1);
+        System.out.println(ceshi.getMsg());
 
     }
     @Test
@@ -32,7 +34,8 @@ public class Demo {
         sagasDates.add(getSagasDate(true));
         sagasDates.add(getSagasDate(true));
         sagasDates.add(getSagasDate(false));
-        sagasHandler.handler(sagasDates, SeqCreateUtil.create("ceshi"),1);
+        MulStatusEnum ceshi = sagasHandler.handler(sagasDates, SeqCreateUtil.create("ceshi"), 1);
+        System.out.println(ceshi.getMsg());
     }
     private SagasDate getSagasDate(boolean b) {
         SagasProcessorImpl1 processorImpl1 = new SagasProcessorImpl1();

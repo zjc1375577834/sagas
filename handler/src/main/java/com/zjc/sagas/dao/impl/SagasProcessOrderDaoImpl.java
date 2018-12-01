@@ -112,7 +112,7 @@ public class SagasProcessOrderDaoImpl extends SqlSessionDaoSupport implements Sa
         processOrder.setOrderNo(orderNo);
         processOrder.setOrder(order);
         map.put("orderNo",orderNo);
-        map.put("order",order);
+        map.put("order",order.toString());
 
         return getSqlSession().selectOne(generateStatement("selectByOrderNoAndOrder"), processOrder);
     }

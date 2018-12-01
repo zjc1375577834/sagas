@@ -34,12 +34,19 @@ public class SagasProcessOrderTest extends BaseTestCase {
 //        po.setReSend("");
 
 //        System.out.println(" insert count: "+sagasProcessOrderService.insert(po));
-        sagasProcessOrderService.selectByOrderNoAndOrder("ceshi20181201134345046615",1);
+        SagasProcessOrder sagasProcessOrder = sagasProcessOrderService.selectByOrderNoAndOrder("ceshi20181201134345046615", 1);
+        System.out.println(sagasProcessOrder.getOrderNo());
 
     }
 
-
-
+@Test
+    public void testupdate() {
+        SagasProcessOrder order = new SagasProcessOrder();
+        order.setOrderNo("ceshi20181201134345046615");
+        order.setStatus(1);
+        order.setProcessNo("process20181201134345948252");
+        sagasProcessOrderService.updateByProcessNoAndStatus(order,0);
+    }
 
     /**
     * 测试查询总量
@@ -61,7 +68,9 @@ public class SagasProcessOrderTest extends BaseTestCase {
     public void testQueryListByParam() {
 
         SagasProcessOrderQuery sagasProcessOrderQuery = new SagasProcessOrderQuery();
-
+        sagasProcessOrderQuery.setRows(10);
+        sagasProcessOrderQuery.setOffset(0);
+        sagasProcessOrderQuery.setOrder(1);
         System.out.println(" queryListByParam param "+ JSON.toJSONString(sagasProcessOrderQuery) +
         "   result size :" + sagasProcessOrderService.queryListByParam(sagasProcessOrderQuery).size()  +
         "   result :" + JSON.toJSONString(sagasProcessOrderService.queryListByParam(sagasProcessOrderQuery)));

@@ -22,10 +22,10 @@ public class ContextUtils {
         if (list == null) {
             throw new IllegalArgumentException("当前缓存不存在该信息");
         }
-        if (list.size() < order || order <1) {
+        if (list.size() < order || order <0) {
             throw new IllegalArgumentException("序号不合法");
         }
-        return list.get(order-1);
+        return list.get(order);
     }
     public static void  delete(String key){
         map.remove(key);

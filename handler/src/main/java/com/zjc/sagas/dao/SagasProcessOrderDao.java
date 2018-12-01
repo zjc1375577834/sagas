@@ -2,6 +2,7 @@ package com.zjc.sagas.dao;
 
 import com.zjc.sagas.query.SagasProcessOrderQuery;
 import com.zjc.sagas.model.SagasProcessOrder;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -32,14 +33,14 @@ public interface SagasProcessOrderDao {
      * @param sagasProcessOrder
      * @return
      */
-    int updateById(SagasProcessOrder sagasProcessOrder,Integer status);
+    int updateById(@Param("sagasProcessOrder") SagasProcessOrder sagasProcessOrder,@Param("olderStatus") Integer status);
 
     /**
      * 根据id查询处理
      * @param id
      * @return
      */
-    SagasProcessOrder  selectByOrderNoAndOrder(String orderNo,Integer order);
+    SagasProcessOrder  selectByOrderNoAndOrder(@Param("orderNo") String orderNo,@Param("order") Integer order);
 
     /**
      * 根据id查询处理 加锁

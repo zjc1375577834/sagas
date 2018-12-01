@@ -2,6 +2,7 @@ package com.zjc.sagas.dao;
 
 import com.zjc.sagas.query.SagasOrderQuery;
 import com.zjc.sagas.model.SagasOrder;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -30,9 +31,9 @@ public interface SagasOrderDao {
     /**
      * 根据id更新处理
      * @param sagasOrder
-     * @return
+     * @retur
      */
-    int updateByOrderNo(SagasOrder sagasOrder,Integer status);
+    int updateByOrderNo(@Param("sagasOrder") SagasOrder sagasOrder, @Param("olderStatus") Integer status);
 
     /**
      * 根据id查询处理

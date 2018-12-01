@@ -58,7 +58,7 @@ public class SagasProcessOrderServiceImpl implements SagasProcessOrderService {
     @Override
     public int updateByProcessNoAndStatus(SagasProcessOrder sagasProcessOrder,Integer status) {
         Assert.notNull(sagasProcessOrder, "更新对象为空");
-        Assert.notNull(sagasProcessOrder.getId(), "更新对象id为空");
+        Assert.notNull(sagasProcessOrder.getProcessNo(), "更新对象id为空");
 
         return sagasProcessOrderDao.updateById(sagasProcessOrder,status);
     }
