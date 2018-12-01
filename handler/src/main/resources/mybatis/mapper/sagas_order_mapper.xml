@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="com.zjc.sagas.facade.model.SagasOrder">
+<mapper namespace="com.zjc.sagas.dao.SagasOrderDao">
 
     <!-- 返回结果集 -->
-    <resultMap id="SagasOrderMap" type="com.zjc.sagas.facade.model.SagasOrder">
+    <resultMap id="SagasOrderMap" type="com.zjc.sagas.model.SagasOrder">
         <result column="id" property="id"/>
         <result column="order_no" property="orderNo"/>
         <result column="status" property="status"/>
@@ -89,7 +89,7 @@
 
 
     <!-- 插入处理 -->
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
         INSERT ignore INTO `sagas_order`
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <include refid="_field_list"/>
@@ -101,7 +101,7 @@
     </insert>
 
     <!-- 根据id更新处理 -->
-    <update id="updateById" parameterType="java.util.Map">
+    <update id="updateByOrderNo" parameterType="java.util.Map">
         UPDATE `sagas_order`
         <trim prefix="set" suffixOverrides=",">
             <if test="sagasOrder.orderNo != null">
@@ -122,7 +122,7 @@
     </update>
 
     <!-- 根据id查询处理 -->
-    <select id="selectById" resultMap="SagasOrderMap">
+    <select id="selectByOrderNo" resultMap="SagasOrderMap" parameterType="java.lang.String">
         SELECT
         <include refid="_field_list"/>
         FROM `sagas_order`

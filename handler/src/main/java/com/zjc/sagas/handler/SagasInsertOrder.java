@@ -1,6 +1,7 @@
 package com.zjc.sagas.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.zjc.sagas.enums.MulStatusEnum;
 import com.zjc.sagas.enums.ProcessStatusEnum;
 import com.zjc.sagas.model.SagasDate;
 import com.zjc.sagas.model.SagasOrder;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +32,8 @@ public class SagasInsertOrder {
         order.setOrderNo(orderNo);
         order.setParamHash(list.hashCode());
         order.setType(type);
+        order.setStatus(MulStatusEnum.INIT.getType());
+        order.setCreateTime(new Date());
         int insert = sagasOrderService.insert(order);
         if (insert == 0) {
             return true;

@@ -33,7 +33,8 @@ public class SagasProcessOrderTest extends BaseTestCase {
 //        po.setOrder("");
 //        po.setReSend("");
 
-        System.out.println(" insert count: "+sagasProcessOrderService.insert(po));
+//        System.out.println(" insert count: "+sagasProcessOrderService.insert(po));
+        sagasProcessOrderService.selectByOrderNoAndOrder("ceshi20181201134345046615",1);
 
     }
 

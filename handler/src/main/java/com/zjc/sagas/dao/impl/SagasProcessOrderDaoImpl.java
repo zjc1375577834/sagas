@@ -26,7 +26,7 @@ public class SagasProcessOrderDaoImpl extends SqlSessionDaoSupport implements Sa
     /**
      * mybatis mapper的命名空间，包路径加类名
      */
-    private static final String NAME_SPACE = SagasProcessOrder.class.getName();
+    private static final String NAME_SPACE = SagasProcessOrderDao.class.getName();
 
     /**
      * 返回mybatis 执行代码语句块定位字符串，是namespace.id 组成
@@ -100,19 +100,21 @@ public class SagasProcessOrderDaoImpl extends SqlSessionDaoSupport implements Sa
 
     /**
      * 根据id查询处理
-     * @param id
+     * @param
      * @return
      */
     @Override
     public SagasProcessOrder selectByOrderNoAndOrder(String orderNo,Integer order) {
         Assert.notNull(orderNo, "更新对象为空");
         Assert.notNull(order, "更新对象为空");
-
         Map<String,Object> map = new HashMap<String,Object>();
+        SagasProcessOrder processOrder = new SagasProcessOrder();
+        processOrder.setOrderNo(orderNo);
+        processOrder.setOrder(order);
         map.put("orderNo",orderNo);
         map.put("order",order);
 
-        return getSqlSession().selectOne(generateStatement("selectById"), map);
+        return getSqlSession().selectOne(generateStatement("selectByOrderNoAndOrder"), processOrder);
     }
 
     /**

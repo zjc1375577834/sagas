@@ -7,6 +7,9 @@ import com.zjc.sagas.model.SagasOrder;
 import com.zjc.sagas.service.SagasOrderService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+
+import java.util.Date;
 
 /**
  * SagasOrderTest 测试类
@@ -20,15 +23,20 @@ public class SagasOrderTest extends BaseTestCase {
     /**
     * 测试插入
     */
+    @Rollback(false)
     @Test
     public void testInsert() throws Throwable {
 
         SagasOrder po = new SagasOrder();
-//        po.setOrderNo("");
-//        po.setParamHash("");
-//        po.setType("");
+        po.setOrderNo("12345");
+        po.setParamHash(1211);
+        po.setType(1);
+        po.setStatus(1);
+        po.setCreateTime(new Date());
 
         System.out.println(" insert count: "+sagasOrderService.insert(po));
+        SagasOrder sagasOrder = sagasOrderService.selectByOrderNo("1234");
+        System.out.println(sagasOrder.getOrderNo());
 
     }
 
@@ -55,6 +63,9 @@ public class SagasOrderTest extends BaseTestCase {
     public void testQueryListByParam() {
 
         SagasOrderQuery sagasOrderQuery = new SagasOrderQuery();
+        sagasOrderQuery.setStatus(1);
+        sagasOrderQuery.setOffset(0);
+        sagasOrderQuery.setRows(10);
 
         System.out.println(" queryListByParam param "+ JSON.toJSONString(sagasOrderQuery) +
         "   result size :" + sagasOrderService.queryListByParam(sagasOrderQuery).size()  +

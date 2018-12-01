@@ -1,9 +1,10 @@
 package test;
 
+import com.zjc.sagas.annotation.Sagas;
 import com.zjc.sagas.enums.ProcessStatusEnum;
 import com.zjc.sagas.interfaces.SagasProcessor;
 import com.zjc.sagas.model.SagasContext;
-
+@Sagas
 public class SagasProcessorImpl1 implements SagasProcessor {
     @Override
     public ProcessStatusEnum doCommit(SagasContext context) {
