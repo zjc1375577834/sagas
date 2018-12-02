@@ -34,19 +34,13 @@ public class ProcessControlImpl implements ProcessControl {
         SagasOrder sagasOrder = sagasOrderService.selectByOrderNo(orderNo);
         Integer orderStatus = sagasOrder.getStatus();
         MulStatusEnum anEnum = MulStatusEnum.getByType(orderStatus);
+        Boolean isSend = null;
+        MulStatusEnum status = null;
         MulStatusEnum resultEnum = null;
         if (anEnum.equals(MulStatusEnum.INIT )|| anEnum.equals(MulStatusEnum.ING)){
             resultEnum = MulStatusEnum.SUC;
             for (int i =0;i < list.size(); i++) {
-                Boolean isSend = (Boolean)result.get("isSend");
-                MulStatusEnum status = (MulStatusEnum)result.get("status");
-                if (status != null && status.getType() != orderStatus) {
-                    sagasOrder.setType(status.getType());
-                    resultEnum = status;
-                    sagasOrderService.updateByOrderNoAndStatus(sagasOrder,anEnum.getType());
-                    anEnum = status;
 
-                }
                 if (Boolean.FALSE.equals(isSend)) {
                     break;
                 }else {
@@ -56,21 +50,24 @@ public class ProcessControlImpl implements ProcessControl {
                     }else {
                         sagasAsynDistribute.distribute(orderNo,i,result);
                     }
+                }
+                isSend = (Boolean)result.get("isSend");
+                status = (MulStatusEnum)result.get("status");
+                if (status != null && status.getType() != orderStatus) {
+                    sagasOrder.setStatus(status.getType());
+                    resultEnum = status;
+                    sagasOrderService.updateByOrderNoAndStatus(sagasOrder,anEnum.getType());
+                    anEnum = status;
+
                 }
             }
         }
         if (anEnum.equals(MulStatusEnum.ROLL) || anEnum.equals(MulStatusEnum.RING)) {
             resultEnum = MulStatusEnum.FAIL;
-            for (int i = list.size();i> 0; i--) {
-                Boolean isSend = (Boolean)result.get("isSend");
-                MulStatusEnum status = (MulStatusEnum)result.get("status");
-                if (status != null && status.getType() != anEnum.getType()) {
-
-                    resultEnum = status;
-                    sagasOrder.setStatus(status.getType());
-                    sagasOrderService.updateByOrderNoAndStatus(sagasOrder,anEnum.getType());
-                    anEnum = status;
-                }
+            isSend = true;
+            result.put("isSend",true);
+            result.remove("status");
+            for (int i = list.size()-1;i>=0 ; i--) {
                 if (Boolean.FALSE.equals(isSend)) {
                     break;
                 }else {
@@ -80,6 +77,14 @@ public class ProcessControlImpl implements ProcessControl {
                     }else {
                         sagasAsynDistribute.distribute(orderNo,i,result);
                     }
+                }
+                isSend = (Boolean)result.get("isSend");
+                status = (MulStatusEnum)result.get("status");
+                if (status != null && status.getType() != anEnum.getType()) {
+                    resultEnum = status;
+                    sagasOrder.setStatus(status.getType());
+                    sagasOrderService.updateByOrderNoAndStatus(sagasOrder,anEnum.getType());
+                    anEnum = status;
                 }
             }
         }

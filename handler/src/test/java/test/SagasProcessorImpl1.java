@@ -12,7 +12,7 @@ public class SagasProcessorImpl1 implements SagasProcessor {
         if (param.equals(true)){
             return ProcessStatusEnum.SUC;
         }
-        return ProcessStatusEnum.ING;
+        return ProcessStatusEnum.FAIL;
     }
 
     @Override
