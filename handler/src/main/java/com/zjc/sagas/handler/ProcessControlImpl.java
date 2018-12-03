@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * create by zjc in 2018/11/29 0029
@@ -35,7 +36,6 @@ public class ProcessControlImpl implements ProcessControl {
         Integer orderStatus = sagasOrder.getStatus();
         MulStatusEnum anEnum = MulStatusEnum.getByType(orderStatus);
         Boolean isSend = null;
-        MulStatusEnum status = null;
         MulStatusEnum resultEnum = null;
         if (anEnum.equals(MulStatusEnum.INIT )|| anEnum.equals(MulStatusEnum.ING)){
             resultEnum = MulStatusEnum.SUC;
@@ -52,15 +52,17 @@ public class ProcessControlImpl implements ProcessControl {
                     }
                 }
                 isSend = (Boolean)result.get("isSend");
-                status = (MulStatusEnum)result.get("status");
-                if (status != null && status.getType() != orderStatus) {
-                    sagasOrder.setStatus(status.getType());
-                    resultEnum = status;
-                    sagasOrderService.updateByOrderNoAndStatus(sagasOrder,anEnum.getType());
-                    anEnum = status;
 
-                }
             }
+            MulStatusEnum mulstatus = this.getCommitMulstatus(result, list.size());
+            if (mulstatus != null && mulstatus.getType() != anEnum.getType()) {
+                resultEnum = mulstatus;
+                sagasOrder.setStatus(mulstatus.getType());
+                sagasOrderService.updateByOrderNoAndStatus(sagasOrder,anEnum.getType());
+                anEnum = mulstatus;
+            }
+
+
         }
         if (anEnum.equals(MulStatusEnum.ROLL) || anEnum.equals(MulStatusEnum.RING)) {
             resultEnum = MulStatusEnum.FAIL;
@@ -79,12 +81,12 @@ public class ProcessControlImpl implements ProcessControl {
                     }
                 }
                 isSend = (Boolean)result.get("isSend");
-                status = (MulStatusEnum)result.get("status");
-                if (status != null && status.getType() != anEnum.getType()) {
-                    resultEnum = status;
-                    sagasOrder.setStatus(status.getType());
+                MulStatusEnum mulstatus = this.getRollMulstatus(result, list.size());
+                if (mulstatus != null && mulstatus.getType() != anEnum.getType()) {
+                    resultEnum = mulstatus;
+                    sagasOrder.setStatus(mulstatus.getType());
                     sagasOrderService.updateByOrderNoAndStatus(sagasOrder,anEnum.getType());
-                    anEnum = status;
+                    anEnum = mulstatus;
                 }
             }
         }
@@ -99,6 +101,32 @@ public class ProcessControlImpl implements ProcessControl {
             throw new IllegalArgumentException("过程异常,缺少注解");
         }
         return annotation.isOrder();
+    }
+    private MulStatusEnum getCommitMulstatus(Map result,int size){
+        MulStatusEnum statusEnum = MulStatusEnum.SUC;
+        for (int i = 0; i < size ; i++) {
+            Object o = result.get(size + "");
+            if (o == null) {
+                if (statusEnum.getType() < MulStatusEnum.ING.getType()) {
+                    statusEnum = MulStatusEnum.ING;
+                }
+            }else {
+                MulStatusEnum status = (MulStatusEnum)o;
+                if (statusEnum.getType() < status.getType()) {
+                    statusEnum = status;
+                }
+            }
+
+        }
+        return statusEnum;
+    }
+    private MulStatusEnum getRollMulstatus(Map result, int size){
+        MulStatusEnum mulstatus = this.getCommitMulstatus(result, size);
+        if (mulstatus == MulStatusEnum.ROLL) {
+            return MulStatusEnum.FAIL;
+        }else {
+            return mulstatus;
+        }
     }
 
 }

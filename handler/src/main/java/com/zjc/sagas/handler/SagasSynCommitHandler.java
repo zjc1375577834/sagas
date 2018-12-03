@@ -53,12 +53,13 @@ public class SagasSynCommitHandler implements ProcessorCommit {
         if (i==1) {
             if (processStatusEnum.equals(ProcessStatusEnum.SUC)) {
 //                result.put("isSend", true);
+                result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.SUC);
             } else if (processStatusEnum.equals(ProcessStatusEnum.ING)) {
                 result.put("isSend", false);
-                result.put("status", MulStatusEnum.ING);
+                result.put(sagasProcessOrder.getOrder().toString(), MulStatusEnum.ING);
             } else if (ProcessStatusEnum.FAIL.equals(processStatusEnum)) {
                 result.put("isSend", false);
-                result.put("status", MulStatusEnum.ROLL);
+                result.put(sagasProcessOrder.getOrder().toString(), MulStatusEnum.ROLL);
                 this.failRollBack(orderNo,order,result);
             } else {
                 this.initCommit(orderNo,order,result);
@@ -85,12 +86,13 @@ public class SagasSynCommitHandler implements ProcessorCommit {
         if ( i == 1) {
             if (processStatusEnum.equals(ProcessStatusEnum.SUC)) {
 //                result.put("isSend", true);
+                result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.SUC);
             } else if (processStatusEnum.equals(ProcessStatusEnum.ING)) {
                 result.put("isSend", false);
-                result.put("status", MulStatusEnum.ING);
+                result.put(sagasProcessOrder.getOrder().toString(), MulStatusEnum.ING);
             } else if (ProcessStatusEnum.FAIL.equals(processStatusEnum)) {
                 result.put("isSend", false);
-                result.put("status", MulStatusEnum.ROLL);
+                result.put(sagasProcessOrder.getOrder().toString(), MulStatusEnum.ROLL);
                 this.failRollBack(orderNo,order,result);
             } else if(processStatusEnum.equals(ProcessStatusEnum.NOBEGIN) || ProcessStatusEnum.INIT.equals(processStatusEnum)){
                 this.initCommit(orderNo,order,result);
@@ -116,7 +118,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
         sagasProcessOrder.setMothedName("doCancel");
         int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);
         if (i == 1) {
-            result.put("status",MulStatusEnum.ROLL);
+            result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.ROLL);
         }
     }
 
@@ -138,12 +140,12 @@ public class SagasSynCommitHandler implements ProcessorCommit {
         int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);
         if (i == 1) {
             if (processStatusEnum.equals(ProcessStatusEnum.SUC)) {
-                result.put("status",MulStatusEnum.ROLL);
+                result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.ROLL);
             }else if(processStatusEnum.equals(ProcessStatusEnum.ING)){
-                result.put("status",MulStatusEnum.RING);
+                result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.RING);
                 result.put("isSend",false);
             }else if(processStatusEnum.equals(ProcessStatusEnum.FAIL)){
-                result.put("status",MulStatusEnum.RFAIL);
+                result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.RFAIL);
                 result.put("isSend",false);
                 this.rfailRollBack(orderNo,order,result);
             }else {
@@ -181,7 +183,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
             this.failRollBack(orderNo,order,result);
         }else if(processStatusEnum.equals(ProcessStatusEnum.ING)) {
             result.put("isSend",false);
-            result.put("status",MulStatusEnum.RING);
+            result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.RING);
         }else {
             throw new IllegalArgumentException("订单状态异常");
         }
@@ -205,14 +207,14 @@ public class SagasSynCommitHandler implements ProcessorCommit {
         if (i == 1){
             if (processStatusEnum.equals(ProcessStatusEnum.SUC)) {
 //                result.put("isSend",true);
-                result.put("status",MulStatusEnum.ROLL);
+                result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.ROLL);
             }else if (processStatusEnum.equals(ProcessStatusEnum.FAIL)) {
                 result.put("isSend",false);
-                result.put("status",MulStatusEnum.RFAIL);
+                result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.RFAIL);
                 this.rfailRollBack(orderNo,order,result);
             }else if(processStatusEnum.equals(ProcessStatusEnum.ING)){
                 result.put("isSend",false);
-                result.put("status",MulStatusEnum.RING);
+                result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.RING);
             }else if(processStatusEnum.equals(ProcessStatusEnum.NOBEGIN) || ProcessStatusEnum.INIT.equals(processStatusEnum)) {
                 this.sucRollBack(orderNo,order,result);
             }
@@ -236,12 +238,12 @@ public class SagasSynCommitHandler implements ProcessorCommit {
         int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);
         if (i == 1) {
             if (processStatusEnum.equals(ProcessStatusEnum.SUC)) {
-                result.put("status",MulStatusEnum.ROLL);
+                result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.ROLL);
             }else if(processStatusEnum.equals(ProcessStatusEnum.ING)){
-                result.put("status",MulStatusEnum.RING);
+                result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.RING);
                 result.put("isSend",false);
             }else if(processStatusEnum.equals(ProcessStatusEnum.FAIL)){
-                result.put("status",MulStatusEnum.RFAIL);
+                result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.RFAIL);
                 result.put("isSend",false);
                 this.rfailRollBack(orderNo,order,result);
             }else {
@@ -262,7 +264,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
         if (!sagasProcessOrder.getMothedName().equals("doCancel") || status != ProcessStatusEnum.FAIL.getType()) {
             throw new IllegalArgumentException("订单状态不合法");
         }
-        result.put("status",MulStatusEnum.RFAIL);
+        result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.RFAIL);
         result.put("isSend",false);
     }
 }
