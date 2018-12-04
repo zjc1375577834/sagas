@@ -36,7 +36,7 @@ public class SagasInsertOrder {
         order.setCreateTime(new Date());
         int insert = sagasOrderService.insert(order);
         if (insert == 0) {
-            return true;
+            return false;
         }
         int temp = 0;
         for(SagasDate sagasDate : list){

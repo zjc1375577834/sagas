@@ -105,7 +105,7 @@ public class ProcessControlImpl implements ProcessControl {
     private MulStatusEnum getCommitMulstatus(Map result,int size){
         MulStatusEnum statusEnum = MulStatusEnum.SUC;
         for (int i = 0; i < size ; i++) {
-            Object o = result.get(size + "");
+            Object o = result.get(i + "");
             if (o == null) {
                 if (statusEnum.getType() < MulStatusEnum.ING.getType()) {
                     statusEnum = MulStatusEnum.ING;
