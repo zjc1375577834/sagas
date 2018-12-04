@@ -90,7 +90,7 @@
 
     <!-- 插入处理 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
-        INSERT ignore INTO `sagas_order`
+        INSERT  INTO `sagas_order`
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <include refid="_field_list"/>
         </trim>

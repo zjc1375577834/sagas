@@ -2,11 +2,17 @@ package com.zjc.sagas.handler;
 
 import com.zjc.sagas.annotation.Sagas;
 import com.zjc.sagas.enums.MulStatusEnum;
+import com.zjc.sagas.enums.ProcessStatusEnum;
 import com.zjc.sagas.interfaces.ProcessControl;
 import com.zjc.sagas.interfaces.SagasProcessor;
 import com.zjc.sagas.model.SagasDate;
 import com.zjc.sagas.model.SagasOrder;
+import com.zjc.sagas.model.SagasProcessOrder;
+import com.zjc.sagas.query.SagasProcessOrderQuery;
+import com.zjc.sagas.service.SagasOrderHistoryService;
 import com.zjc.sagas.service.SagasOrderService;
+import com.zjc.sagas.service.SagasProcessOrderHistoryService;
+import com.zjc.sagas.service.SagasProcessOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -26,6 +32,12 @@ public class ProcessControlImpl implements ProcessControl {
     private SagasSynDistributeImpl sagasSynDistribute;
     @Autowired
     private SagasAsynDistributeImpl sagasAsynDistribute;
+    @Autowired
+    private SagasOrderHistoryService sagasOrderHistoryService;
+    @Autowired
+    private SagasProcessOrderService sagasProcessOrderService;
+    @Autowired
+    private SagasProcessOrderHistoryService sagasProcessOrderHistoryService;
     @Override
     public MulStatusEnum control(List<SagasDate> list, String orderNo, Integer type) {
         if (list == null || list.size() ==0 || StringUtils.isEmpty(type)) {
@@ -91,7 +103,14 @@ public class ProcessControlImpl implements ProcessControl {
             }
         }
         sagasOrder.setStatus(resultEnum.getType());
-        sagasOrderService.updateByOrderNoAndStatus(sagasOrder,anEnum.getType());
+        if(resultEnum.equals(MulStatusEnum.SUC) || resultEnum.equals(MulStatusEnum.FAIL)) {
+            sagasOrderHistoryService.updateByOrderNoAndStatus(sagasOrder,MulStatusEnum.INIT.getType());
+            sagasOrderService.deleteById(sagasOrder.getId());
+            this.updateProcessOrder(orderNo);
+        }else {
+            sagasOrderService.updateByOrderNoAndStatus(sagasOrder, anEnum.getType());
+        }
+
         return resultEnum;
     }
     private boolean getAnnotion(SagasDate sagasDate) {
@@ -126,6 +145,15 @@ public class ProcessControlImpl implements ProcessControl {
             return MulStatusEnum.FAIL;
         }else {
             return mulstatus;
+        }
+    }
+    private void updateProcessOrder(String orderNo) {
+        SagasProcessOrderQuery query = new SagasProcessOrderQuery();
+        query.setOrderNo(orderNo);
+        List<SagasProcessOrder> sagasProcessOrders = sagasProcessOrderService.queryListByParam(query);
+        for (int i = 0; i< sagasProcessOrders.size(); i++) {
+            sagasProcessOrderHistoryService.updateByProcessNoAndStatus(sagasProcessOrders.get(i), ProcessStatusEnum.INIT.getType());
+            sagasOrderHistoryService.deleteById(sagasProcessOrders.get(i).getId());
         }
     }
 
