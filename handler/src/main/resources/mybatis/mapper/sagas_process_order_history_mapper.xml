@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.zjc.sagas.dao.SagasProcessOrderHistoryDao">
+
+    <!-- 返回结果集 -->
+    <resultMap id="SagasProcessOrderMap" type="com.zjc.sagas.model.SagasProcessOrder">
+        <result column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="process_no" property="processNo"/>
+        <result column="param" property="param"/>
+        <result column="class_name" property="className"/>
+        <result column="mothed_name" property="mothedName"/>
+        <result column="status" property="status"/>
+        <result column="order" property="order"/>
+        <result column="re_send" property="reSend"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+    <!-- 字段列表信息 -->
+    <sql id="_field_list">
+        `id`,
+        `order_no`,
+        `process_no`,
+        `param`,
+        `class_name`,
+        `mothed_name`,
+        `status`,
+        `order`,
+        `re_send`,
+        `create_time`,
+        `modify_time`
+    </sql>
+
+    <!-- 值列表信息 -->
+    <sql id="_value_list">
+        #{id},
+        #{orderNo},
+        #{processNo},
+        #{param},
+        #{className},
+        #{mothedName},
+        #{status},
+        #{order},
+        #{reSend},
+        #{createTime},
+        #{modifyTime}
+    </sql>
+
+    <!-- 索引条件查询 -->
+    <sql id="_index_condition_where">
+        <if test="orderNo != null">
+            AND `order_no` = #{orderNo}
+        </if>
+        <if test="processNo != null">
+            AND `process_no` = #{processNo}
+        </if>
+    </sql>
+
+    <!-- 普通条件查询 -->
+    <sql id="_common_where">
+        <if test="param != null">
+            AND `param` = #{param}
+        </if>
+        <if test="className != null">
+            AND `class_name` = #{className}
+        </if>
+        <if test="mothedName != null">
+            AND `mothed_name` = #{mothedName}
+        </if>
+        <if test="status != null">
+            AND `status` = #{status}
+        </if>
+        <if test="order != null">
+            AND `order` = #{order}
+        </if>
+        <if test="reSend != null">
+            AND `re_send` = #{reSend}
+        </if>
+    </sql>
+
+    <!-- 范围条件查询 -->
+    <sql id="_region_where">
+        <if test="egtCreateTime != null">
+            AND `create_time` >= #{egtCreateTime}
+        </if>
+        <if test="ltCreateTime != null">
+            <![CDATA[
+            AND `create_time` < #{ltCreateTime}
+            ]]>
+        </if>
+    </sql>
+
+    <!-- 通用排序 -->
+    <sql id="_common_sorts">
+        <if test="sorts != null">
+            ORDER BY
+            <foreach collection="sorts" item="item" separator=",">
+            ${item.columnName} ${item.sortMode.mode}
+            </foreach>
+        </if>
+    </sql>
+
+    <!-- where -->
+    <sql id="_where">
+        <trim prefix="where" prefixOverrides="and" suffix="">
+            <include refid="_index_condition_where"/>
+            <include refid="_common_where"/>
+            <include refid="_region_where"/>
+        </trim>
+    </sql>
+
+
+    <!-- 插入处理 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT  INTO `sagas_process_order_history_history`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="_field_list"/>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="_value_list"/>
+        </trim>
+    </insert>
+
+    <!-- 根据id更新处理 -->
+    <update id="updateById" parameterType="java.util.Map">
+        UPDATE `sagas_process_order_history`
+        <trim prefix="set" suffixOverrides=",">
+            <if test="sagasProcessOrder.orderNo != null">
+                `order_no`=#{sagasProcessOrder.orderNo},
+            </if>
+            <if test="sagasProcessOrder.processNo != null">
+                `process_no`=#{sagasProcessOrder.processNo},
+            </if>
+            <if test="sagasProcessOrder.param != null">
+                `param`=#{sagasProcessOrder.param},
+            </if>
+            <if test="sagasProcessOrder.className != null">
+                `class_name`=#{sagasProcessOrder.className},
+            </if>
+            <if test="sagasProcessOrder.mothedName != null">
+                `mothed_name`=#{sagasProcessOrder.mothedName},
+            </if>
+            <if test="sagasProcessOrder.status != null">
+                `status`=#{sagasProcessOrder.status},
+            </if>
+            <if test="sagasProcessOrder.order != null">
+                `order`=#{sagasProcessOrder.order},
+            </if>
+            <if test="sagasProcessOrder.reSend != null">
+                `re_send`=#{sagasProcessOrder.reSend},
+            </if>
+            `modify_time`=#{sagasProcessOrder.modifyTime}
+        </trim>
+        WHERE `process_no` = #{sagasProcessOrder.processNo} and `status` = #{olderStatus} limit 1
+    </update>
+
+    <!-- 根据id查询处理 -->
+    <select id="selectByOrderNoAndOrder"  parameterType="map" resultMap="SagasProcessOrderMap">
+        SELECT
+        <include refid="_field_list"/>
+        FROM `sagas_process_order_history`
+    WHERE `order_no` = #{orderNo} and `order` = #{order} limit 1
+    </select>
+
+
+    <!-- 根据id查询处理 加锁 -->
+    <select id="selectByIdForUpdate" resultMap="SagasProcessOrderMap">
+        SELECT
+        <include refid="_field_list"/>
+        FROM `sagas_process_order_history`
+        WHERE `id` = #{id} limit 1 for update 
+    </select>
+
+    <!-- 根据id删除处理 -->
+    <delete id="deleteById">
+        DELETE FROM `sagas_process_order_history` WHERE `id` = #{id} limit 1 
+    </delete>
+
+    <!-- 根据条件查询信息列表 -->
+    <select id="queryListByParam" parameterType="map" resultMap="SagasProcessOrderMap">
+        SELECT
+            <include refid="_field_list"/>
+        FROM `sagas_process_order_history`
+        <include refid="_where"/>
+        <include refid="_common_sorts"/>
+        limit #{offset}, #{rows}
+    </select>
+
+    <!-- 根据条件查询信息总数目 -->
+    <select id="queryCountByParam" parameterType="map" resultType="java.lang.Long">
+        SELECT count(1)
+        FROM `sagas_process_order_history`
+        <include refid="_where"/>
+    </select>
+
+</mapper>

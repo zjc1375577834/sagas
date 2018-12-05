@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.zjc.sagas.dao.SagasOrderHistoryDao">
+
+    <!-- 返回结果集 -->
+    <resultMap id="SagasOrderMap" type="com.zjc.sagas.model.SagasOrder">
+        <result column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="status" property="status"/>
+        <result column="param_hash" property="paramHash"/>
+        <result column="type" property="type"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+    <!-- 字段列表信息 -->
+    <sql id="_field_list">
+        `id`,
+        `order_no`,
+        `status`,
+        `param_hash`,
+        `type`,
+        `create_time`,
+        `modify_time`
+    </sql>
+
+    <!-- 值列表信息 -->
+    <sql id="_value_list">
+        #{id},
+        #{orderNo},
+        #{status},
+        #{paramHash},
+        #{type},
+        #{createTime},
+        #{modifyTime}
+    </sql>
+
+    <!-- 索引条件查询 -->
+    <sql id="_index_condition_where">
+        <if test="orderNo != null">
+            AND `order_no` = #{orderNo}
+        </if>
+        <if test="paramHash != null">
+            AND `param_hash` = #{paramHash}
+        </if>
+        <if test="status != null">
+            AND `status` = #{status}
+        </if>
+    </sql>
+
+    <!-- 普通条件查询 -->
+    <sql id="_common_where">
+        <if test="type != null">
+            AND `type` = #{type}
+        </if>
+    </sql>
+
+    <!-- 范围条件查询 -->
+    <sql id="_region_where">
+        <if test="egtCreateTime != null">
+            AND `create_time` >= #{egtCreateTime}
+        </if>
+        <if test="ltCreateTime != null">
+            <![CDATA[
+            AND `create_time` < #{ltCreateTime}
+            ]]>
+        </if>
+    </sql>
+
+    <!-- 通用排序 -->
+    <sql id="_common_sorts">
+        <if test="sorts != null">
+            ORDER BY
+            <foreach collection="sorts" item="item" separator=",">
+            ${item.columnName} ${item.sortMode.mode}
+            </foreach>
+        </if>
+    </sql>
+
+    <!-- where -->
+    <sql id="_where">
+        <trim prefix="where" prefixOverrides="and" suffix="">
+            <include refid="_index_condition_where"/>
+            <include refid="_common_where"/>
+            <include refid="_region_where"/>
+        </trim>
+    </sql>
+
+
+    <!-- 插入处理 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+        INSERT  INTO `sagas_order_history`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="_field_list"/>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="_value_list"/>
+        </trim>
+    </insert>
+
+    <!-- 根据id更新处理 -->
+    <update id="updateByOrderNo" parameterType="java.util.Map">
+        UPDATE `sagas_order_history`
+        <trim prefix="set" suffixOverrides=",">
+            <if test="sagasOrder.orderNo != null">
+                `order_no`=#{sagasOrder.orderNo},
+            </if>
+            <if test="sagasOrder.status != null">
+                `status`=#{sagasOrder.status},
+            </if>
+            <if test="sagasOrder.paramHash != null">
+                `param_hash`=#{sagasOrder.paramHash},
+            </if>
+            <if test="sagasOrder.type != null">
+                `type`=#{sagasOrder.type},
+            </if>
+            `modify_time`=#{sagasOrder.modifyTime}
+        </trim>
+        WHERE `order_no` = #{sagasOrder.orderNo} and `status` = #{olderStatus} limit 1
+    </update>
+
+    <!-- 根据id查询处理 -->
+    <select id="selectByOrderNo" resultMap="SagasOrderMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="_field_list"/>
+        FROM `sagas_order_history`
+    WHERE `order_no` = #{orderNo} limit 1
+    </select>
+
+
+    <!-- 根据id查询处理 加锁 -->
+    <select id="selectByIdForUpdate" resultMap="SagasOrderMap">
+        SELECT
+        <include refid="_field_list"/>
+        FROM `sagas_order_history`
+        WHERE `id` = #{id} limit 1 for update 
+    </select>
+
+    <!-- 根据id删除处理 -->
+    <delete id="deleteById">
+        DELETE FROM `sagas_order_history` WHERE `id` = #{id} limit 1 
+    </delete>
+
+    <!-- 根据条件查询信息列表 -->
+    <select id="queryListByParam" parameterType="map" resultMap="SagasOrderMap">
+        SELECT
+            <include refid="_field_list"/>
+        FROM `sagas_order_history`
+        <include refid="_where"/>
+        <include refid="_common_sorts"/>
+        limit #{offset}, #{rows}
+    </select>
+
+    <!-- 根据条件查询信息总数目 -->
+    <select id="queryCountByParam" parameterType="map" resultType="java.lang.Long">
+        SELECT count(1)
+        FROM `sagas_order_history`
+        <include refid="_where"/>
+    </select>
+
+</mapper>
