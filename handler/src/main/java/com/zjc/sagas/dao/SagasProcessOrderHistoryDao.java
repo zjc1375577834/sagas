@@ -1,7 +1,7 @@
 package com.zjc.sagas.dao;
 
-import com.zjc.sagas.model.SagasProcessOrder;
-import com.zjc.sagas.query.SagasProcessOrderQuery;
+import com.zjc.sagas.model.SagasProcessOrderHistory;
+import com.zjc.sagas.query.SagasProcessOrderHistoryQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public interface SagasProcessOrderHistoryDao {
      * @param sagasProcessOrder
      * @return
      */
-    int insert(SagasProcessOrder sagasProcessOrder);
+    int insert(SagasProcessOrderHistory sagasProcessOrder);
 
     /**
      * 根据id删除处理
@@ -33,21 +33,21 @@ public interface SagasProcessOrderHistoryDao {
      * @param sagasProcessOrder
      * @return
      */
-    int updateById(@Param("sagasProcessOrder") SagasProcessOrder sagasProcessOrder, @Param("olderStatus") Integer status);
+    int updateById(@Param("sagasProcessOrder") SagasProcessOrderHistory sagasProcessOrder, @Param("olderStatus") Integer status);
 
     /**
      * 根据id查询处理
      * @param id
      * @return
      */
-    SagasProcessOrder  selectByOrderNoAndOrder(@Param("orderNo") String orderNo, @Param("order") Integer order);
+    SagasProcessOrderHistory  selectByOrderNoAndOrder(@Param("orderNo") String orderNo, @Param("order") Integer order);
 
     /**
      * 根据id查询处理 加锁
      * @param id
      * @return
      */
-    SagasProcessOrder selectByIdForUpdate(Integer id);
+    SagasProcessOrderHistory selectByIdForUpdate(Integer id);
 
 
 
@@ -56,13 +56,13 @@ public interface SagasProcessOrderHistoryDao {
      * @param sagasProcessOrderQuery
      * @return
      */
-    List<SagasProcessOrder> queryListByParam(SagasProcessOrderQuery sagasProcessOrderQuery);
+    List<SagasProcessOrderHistory> queryListByParam(SagasProcessOrderHistoryQuery sagasProcessOrderQuery);
 
     /**
      * 根据条件查询信息总数目
      * @param sagasProcessOrderQuery
      * @return
      */
-    Long queryCountByParam(SagasProcessOrderQuery sagasProcessOrderQuery);
+    Long queryCountByParam(SagasProcessOrderHistoryQuery sagasProcessOrderQuery);
 
 }

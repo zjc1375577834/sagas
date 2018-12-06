@@ -3,8 +3,8 @@ package com.zjc.sagas.service.impl;
 
 import com.zjc.sagas.dao.SagasProcessOrderHistoryDao;
 import com.zjc.sagas.enums.ProcessStatusEnum;
-import com.zjc.sagas.model.SagasProcessOrder;
-import com.zjc.sagas.query.SagasProcessOrderQuery;
+import com.zjc.sagas.model.SagasProcessOrderHistory;
+import com.zjc.sagas.query.SagasProcessOrderHistoryQuery;
 import com.zjc.sagas.service.SagasProcessOrderHistoryService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -13,26 +13,26 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * SagasProcessOrderService 实现类
+ * SagasProcessOrderHistoryService 实现类
  * Created by AutoGenerate  on 18-11-26 下午2:54 .
  */
 @Service
 public class SagasProcessOrderHistoryServiceImpl implements SagasProcessOrderHistoryService {
 
     @Resource
-    private SagasProcessOrderHistoryDao sagasProcessOrderDao;
+    private SagasProcessOrderHistoryDao SagasProcessOrderHistoryDao;
 
 
     /**
      * 插入处理
-     * @param sagasProcessOrder
+     * @param SagasProcessOrderHistory
      * @return
      */
     @Override
-    public int insert(SagasProcessOrder sagasProcessOrder) {
-        Assert.notNull(sagasProcessOrder, "插入对象为空");
+    public int insert(SagasProcessOrderHistory SagasProcessOrderHistory) {
+        Assert.notNull(SagasProcessOrderHistory, "插入对象为空");
 
-        return sagasProcessOrderDao.insert(sagasProcessOrder);
+        return SagasProcessOrderHistoryDao.insert(SagasProcessOrderHistory);
     }
 
     /**
@@ -44,20 +44,20 @@ public class SagasProcessOrderHistoryServiceImpl implements SagasProcessOrderHis
     public int deleteById(Integer id) {
         Assert.notNull(id, "删除记录id为空");
 
-        return sagasProcessOrderDao.deleteById(id);
+        return SagasProcessOrderHistoryDao.deleteById(id);
     }
 
     /**
      * 根据id更新处理
-     * @param sagasProcessOrder
+     * @param SagasProcessOrderHistory
      * @return
      */
     @Override
-    public int updateByProcessNoAndStatus(SagasProcessOrder sagasProcessOrder,Integer status) {
-        Assert.notNull(sagasProcessOrder, "更新对象为空");
-        Assert.notNull(sagasProcessOrder.getProcessNo(), "更新对象id为空");
+    public int updateByProcessNoAndStatus(SagasProcessOrderHistory SagasProcessOrderHistory,Integer status) {
+        Assert.notNull(SagasProcessOrderHistory, "更新对象为空");
+        Assert.notNull(SagasProcessOrderHistory.getProcessNo(), "更新对象id为空");
 
-        return sagasProcessOrderDao.updateById(sagasProcessOrder,status);
+        return SagasProcessOrderHistoryDao.updateById(SagasProcessOrderHistory,status);
     }
 
     /**
@@ -66,11 +66,11 @@ public class SagasProcessOrderHistoryServiceImpl implements SagasProcessOrderHis
      * @return
      */
     @Override
-    public SagasProcessOrder selectByOrderNoAndOrder(String orderNo,Integer order) {
+    public SagasProcessOrderHistory selectByOrderNoAndOrder(String orderNo,Integer order) {
         Assert.notNull(order, "查询记录order为空");
         Assert.notNull(orderNo, "查询记录orderNo为空");
 
-        return sagasProcessOrderDao.selectByOrderNoAndOrder(orderNo,order);
+        return SagasProcessOrderHistoryDao.selectByOrderNoAndOrder(orderNo,order);
     }
 
     /**
@@ -79,45 +79,45 @@ public class SagasProcessOrderHistoryServiceImpl implements SagasProcessOrderHis
      * @return
      */
     @Override
-    public SagasProcessOrder selectByIdForUpdate(Integer id) {
+    public SagasProcessOrderHistory selectByIdForUpdate(Integer id) {
         Assert.notNull(id, "查询记录id为空");
 
-        return sagasProcessOrderDao.selectByIdForUpdate(id);
+        return SagasProcessOrderHistoryDao.selectByIdForUpdate(id);
     }
 
 
 
     /**
      * 根据条件查询信息列表
-     * @param sagasProcessOrderQuery
+     * @param SagasProcessOrderHistoryQuery
      * @return
      */
     @Override
-    public List<SagasProcessOrder> queryListByParam(SagasProcessOrderQuery sagasProcessOrderQuery) {
-        Assert.notNull(sagasProcessOrderQuery, "查询参数为空");
+    public List<SagasProcessOrderHistory> queryListByParam(SagasProcessOrderHistoryQuery SagasProcessOrderHistoryQuery) {
+        Assert.notNull(SagasProcessOrderHistoryQuery, "查询参数为空");
 
-        return sagasProcessOrderDao.queryListByParam(sagasProcessOrderQuery);
+        return SagasProcessOrderHistoryDao.queryListByParam(SagasProcessOrderHistoryQuery);
     }
 
     /**
      * 根据条件查询信息总数目
-     * @param sagasProcessOrderQuery
+     * @param SagasProcessOrderHistoryQuery
      * @return
      */
     @Override
-    public Long queryCountByParam(SagasProcessOrderQuery sagasProcessOrderQuery) {
-        Assert.notNull(sagasProcessOrderQuery, "查询参数为空");
+    public Long queryCountByParam(SagasProcessOrderHistoryQuery SagasProcessOrderHistoryQuery) {
+        Assert.notNull(SagasProcessOrderHistoryQuery, "查询参数为空");
 
-        return sagasProcessOrderDao.queryCountByParam(sagasProcessOrderQuery);
+        return SagasProcessOrderHistoryDao.queryCountByParam(SagasProcessOrderHistoryQuery);
     }
 
     @Override
-    public List<SagasProcessOrder> queryByOrderNo(String orderNo) {
+    public List<SagasProcessOrderHistory> queryByOrderNo(String orderNo) {
         return null;
     }
 
     @Override
-    public List<SagasProcessOrder> queryByStatus(ProcessStatusEnum statusEnum) {
+    public List<SagasProcessOrderHistory> queryByStatus(ProcessStatusEnum statusEnum) {
         return null;
     }
 }

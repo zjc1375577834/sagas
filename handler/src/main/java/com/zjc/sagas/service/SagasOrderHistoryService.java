@@ -2,8 +2,8 @@ package com.zjc.sagas.service;
 
 
 import com.zjc.sagas.enums.MulStatusEnum;
-import com.zjc.sagas.model.SagasOrder;
-import com.zjc.sagas.query.SagasOrderQuery;
+import com.zjc.sagas.model.SagasOrderHistory;
+import com.zjc.sagas.query.SagasOrderHistoryQuery;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public interface SagasOrderHistoryService {
      * @param sagasOrder
      * @return
      */
-    int insert(SagasOrder sagasOrder);
+    int insert(SagasOrderHistory sagasOrder);
 
     /**
      * 根据id删除处理
@@ -33,21 +33,21 @@ public interface SagasOrderHistoryService {
      * @param sagasOrder
      * @return
      */
-    int updateByOrderNoAndStatus(SagasOrder sagasOrder, Integer status);
+    int updateByOrderNoAndStatus(SagasOrderHistory sagasOrder, Integer status);
 
     /**
      * 根据id查询处理
      * @param id
      * @return
      */
-    SagasOrder selectByOrderNo(String orderNo);
+    SagasOrderHistory selectByOrderNo(String orderNo);
 
     /**
      * 根据id查询处理 加锁
      * @param id
      * @return
      */
-    SagasOrder selectByIdForUpdate(Integer id);
+    SagasOrderHistory selectByIdForUpdate(Integer id);
 
 
 
@@ -56,20 +56,20 @@ public interface SagasOrderHistoryService {
      * @param sagasOrderQuery
      * @return
      */
-    List<SagasOrder> queryListByParam(SagasOrderQuery sagasOrderQuery);
+    List<SagasOrderHistory> queryListByParam(SagasOrderHistoryQuery sagasOrderQuery);
 
     /**
      * 根据条件查询信息总数目
      * @param sagasOrderQuery
      * @return
      */
-    Long queryCountByParam(SagasOrderQuery sagasOrderQuery);
+    Long queryCountByParam(SagasOrderHistoryQuery sagasOrderQuery);
 
     /**
      * 根据订单状态查询订单
      * @param mulStatusEnum
      * @return
      */
-    List<SagasOrder> queryByStatus(MulStatusEnum mulStatusEnum);
+    List<SagasOrderHistory> queryByStatus(MulStatusEnum mulStatusEnum);
 
 }

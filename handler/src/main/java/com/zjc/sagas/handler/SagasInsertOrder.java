@@ -4,16 +4,16 @@ import com.alibaba.fastjson.JSON;
 import com.zjc.sagas.dao.SagasProcessOrderHistoryDao;
 import com.zjc.sagas.enums.MulStatusEnum;
 import com.zjc.sagas.enums.ProcessStatusEnum;
-import com.zjc.sagas.model.SagasDate;
-import com.zjc.sagas.model.SagasOrder;
-import com.zjc.sagas.model.SagasProcessOrder;
+import com.zjc.sagas.model.*;
 import com.zjc.sagas.service.SagasOrderHistoryService;
 import com.zjc.sagas.service.SagasOrderService;
 import com.zjc.sagas.service.SagasProcessOrderHistoryService;
 import com.zjc.sagas.service.SagasProcessOrderService;
+import com.zjc.sagas.utils.BeanCopyUtils;
 import com.zjc.sagas.utils.ContextUtils;
 import com.zjc.sagas.utils.SeqCreateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +42,7 @@ public class SagasInsertOrder {
         order.setStatus(MulStatusEnum.INIT.getType());
         order.setCreateTime(new Date());
         int insert = sagasOrderService.insert(order);
-        int insert1 = sagasOrderHistoryService.insert(order);
+        int insert1 = sagasOrderHistoryService.insert(BeanCopyUtils.copy(order));
         if (insert == 0) {
             return false;
         }
@@ -59,10 +59,11 @@ public class SagasInsertOrder {
             processOrder.setOrder(temp);
             processOrder.setCreateTime(new Date());
             sagasProcessOrderService.insert(processOrder);
-            sagasProcessOrderHistoryService.insert(processOrder);
+            sagasProcessOrderHistoryService.insert(BeanCopyUtils.copy(processOrder));
             temp++;
         }
         ContextUtils.put(orderNo,list);
         return true;
     }
+
 }

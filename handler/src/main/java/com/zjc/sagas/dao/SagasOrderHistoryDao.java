@@ -1,7 +1,7 @@
 package com.zjc.sagas.dao;
 
-import com.zjc.sagas.model.SagasOrder;
-import com.zjc.sagas.query.SagasOrderQuery;
+import com.zjc.sagas.model.SagasOrderHistory;
+import com.zjc.sagas.query.SagasOrderHistoryQuery;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public interface SagasOrderHistoryDao {
      * @param sagasOrder
      * @return
      */
-    int insert(SagasOrder sagasOrder);
+    int insert(SagasOrderHistory sagasOrder);
 
     /**
      * 根据id删除处理
@@ -33,21 +33,21 @@ public interface SagasOrderHistoryDao {
      * @param sagasOrder
      * @retur
      */
-    int updateByOrderNo(@Param("sagasOrder") SagasOrder sagasOrder, @Param("olderStatus") Integer status);
+    int updateByOrderNo(@Param("sagasOrder") SagasOrderHistory sagasOrder, @Param("olderStatus") Integer status);
 
     /**
      * 根据id查询处理
      * @param id
      * @return
      */
-    SagasOrder selectByOrderNo(String orderNo);
+    SagasOrderHistory selectByOrderNo(String orderNo);
 
     /**
      * 根据id查询处理 加锁
      * @param id
      * @return
      */
-    SagasOrder selectByIdForUpdate(Integer id);
+    SagasOrderHistory selectByIdForUpdate(Integer id);
 
 
 
@@ -56,13 +56,13 @@ public interface SagasOrderHistoryDao {
      * @param sagasOrderQuery
      * @return
      */
-    List<SagasOrder> queryListByParam(SagasOrderQuery sagasOrderQuery);
+    List<SagasOrderHistory> queryListByParam(SagasOrderHistoryQuery sagasOrderQuery);
 
     /**
      * 根据条件查询信息总数目
      * @param sagasOrderQuery
      * @return
      */
-    Long queryCountByParam(SagasOrderQuery sagasOrderQuery);
+    Long queryCountByParam(SagasOrderHistoryQuery sagasOrderQuery);
 
 }

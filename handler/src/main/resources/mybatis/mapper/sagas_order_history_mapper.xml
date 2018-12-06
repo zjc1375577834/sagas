@@ -4,7 +4,7 @@
 <mapper namespace="com.zjc.sagas.dao.SagasOrderHistoryDao">
 
     <!-- 返回结果集 -->
-    <resultMap id="SagasOrderMap" type="com.zjc.sagas.model.SagasOrder">
+    <resultMap id="SagasOrderMap" type="com.zjc.sagas.model.SagasOrderHistory">
         <result column="id" property="id"/>
         <result column="order_no" property="orderNo"/>
         <result column="status" property="status"/>

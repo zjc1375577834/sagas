@@ -3,8 +3,9 @@ package com.zjc.sagas.service.impl;
 
 import com.zjc.sagas.dao.SagasOrderHistoryDao;
 import com.zjc.sagas.enums.MulStatusEnum;
-import com.zjc.sagas.model.SagasOrder;
-import com.zjc.sagas.query.SagasOrderQuery;
+import com.zjc.sagas.model.SagasOrderHistory;
+import com.zjc.sagas.query.SagasOrderHistoryQuery;
+import com.zjc.sagas.query.SagasProcessOrderHistoryQuery;
 import com.zjc.sagas.service.SagasOrderHistoryService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -13,27 +14,27 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * SagasOrderService 实现类
+ * SagasOrderHistoryService 实现类
  * Created by AutoGenerate  on 18-11-26 下午2:54 .
  */
 @Service
 public class SagasOrderHistoryServiceImpl implements SagasOrderHistoryService {
 
     @Resource
-    private SagasOrderHistoryDao sagasOrderDao;
+    private SagasOrderHistoryDao SagasOrderHistoryDao;
 
 
 
     /**
      * 插入处理
-     * @param sagasOrder
+     * @param SagasOrderHistory
      * @return
      */
     @Override
-    public int insert(SagasOrder sagasOrder) {
-        Assert.notNull(sagasOrder, "插入对象为空");
+    public int insert(SagasOrderHistory SagasOrderHistory) {
+        Assert.notNull(SagasOrderHistory, "插入对象为空");
 
-        return sagasOrderDao.insert(sagasOrder);
+        return SagasOrderHistoryDao.insert(SagasOrderHistory);
     }
 
     /**
@@ -45,20 +46,20 @@ public class SagasOrderHistoryServiceImpl implements SagasOrderHistoryService {
     public int deleteById(Integer id) {
         Assert.notNull(id, "删除记录id为空");
 
-        return sagasOrderDao.deleteById(id);
+        return SagasOrderHistoryDao.deleteById(id);
     }
 
     /**
      * 根据id更新处理
-     * @param sagasOrder
+     * @param SagasOrderHistory
      * @return
      */
     @Override
-    public int updateByOrderNoAndStatus(SagasOrder sagasOrder, Integer status) {
-        Assert.notNull(sagasOrder, "更新对象为空");
-        Assert.notNull(sagasOrder.getOrderNo(), "更新对象orderNo为空");
+    public int updateByOrderNoAndStatus(SagasOrderHistory SagasOrderHistory, Integer status) {
+        Assert.notNull(SagasOrderHistory, "更新对象为空");
+        Assert.notNull(SagasOrderHistory.getOrderNo(), "更新对象orderNo为空");
 
-        return sagasOrderDao.updateByOrderNo(sagasOrder,status);
+        return SagasOrderHistoryDao.updateByOrderNo(SagasOrderHistory,status);
     }
 
     /**
@@ -67,10 +68,10 @@ public class SagasOrderHistoryServiceImpl implements SagasOrderHistoryService {
      * @return
      */
     @Override
-    public SagasOrder selectByOrderNo(String orderNo) {
+    public SagasOrderHistory selectByOrderNo(String orderNo) {
         Assert.notNull(orderNo, "查询记录id为空");
 
-        return sagasOrderDao.selectByOrderNo(orderNo);
+        return SagasOrderHistoryDao.selectByOrderNo(orderNo);
     }
 
     /**
@@ -79,40 +80,41 @@ public class SagasOrderHistoryServiceImpl implements SagasOrderHistoryService {
      * @return
      */
     @Override
-    public SagasOrder selectByIdForUpdate(Integer id) {
+    public SagasOrderHistory selectByIdForUpdate(Integer id) {
         Assert.notNull(id, "查询记录id为空");
 
-        return sagasOrderDao.selectByIdForUpdate(id);
+        return SagasOrderHistoryDao.selectByIdForUpdate(id);
     }
 
+    @Override
+    public List<SagasOrderHistory> queryListByParam(SagasOrderHistoryQuery sagasOrderQuery) {
+        Assert.notNull(sagasOrderQuery, "查询参数为空");
+
+        return SagasOrderHistoryDao.queryListByParam(sagasOrderQuery);
+    }
 
 
     /**
      * 根据条件查询信息列表
-     * @param sagasOrderQuery
+     * @param SagasOrderHistoryQuery
      * @return
      */
-    @Override
-    public List<SagasOrder> queryListByParam(SagasOrderQuery sagasOrderQuery) {
-        Assert.notNull(sagasOrderQuery, "查询参数为空");
 
-        return sagasOrderDao.queryListByParam(sagasOrderQuery);
-    }
 
     /**
      * 根据条件查询信息总数目
-     * @param sagasOrderQuery
+     * @param SagasOrderHistoryQuery
      * @return
      */
     @Override
-    public Long queryCountByParam(SagasOrderQuery sagasOrderQuery) {
-        Assert.notNull(sagasOrderQuery, "查询参数为空");
+    public Long queryCountByParam(SagasOrderHistoryQuery SagasOrderHistoryQuery) {
+        Assert.notNull(SagasOrderHistoryQuery, "查询参数为空");
 
-        return sagasOrderDao.queryCountByParam(sagasOrderQuery);
+        return SagasOrderHistoryDao.queryCountByParam(SagasOrderHistoryQuery);
     }
 
     @Override
-    public List<SagasOrder> queryByStatus(MulStatusEnum mulStatusEnum) {
+    public List<SagasOrderHistory> queryByStatus(MulStatusEnum mulStatusEnum) {
         return null;
     }
 }

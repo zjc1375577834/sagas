@@ -1,24 +1,24 @@
 package com.zjc.sagas.service;
 
 import com.zjc.sagas.enums.ProcessStatusEnum;
-import com.zjc.sagas.model.SagasProcessOrder;
-import com.zjc.sagas.query.SagasProcessOrderQuery;
+import com.zjc.sagas.model.SagasProcessOrderHistory;
+import com.zjc.sagas.query.SagasProcessOrderHistoryQuery;
 
 import java.util.List;
 
 /**
  *
- * SagasProcessOrderService接口
+ * SagasProcessOrderHistoryService接口
  * Created by AutoGenerate on 18-11-26 下午2:54 .
  */
 public interface SagasProcessOrderHistoryService {
 
     /**
      * 插入处理
-     * @param sagasProcessOrder
+     * @param SagasProcessOrderHistory
      * @return
      */
-    int insert(SagasProcessOrder sagasProcessOrder);
+    int insert(SagasProcessOrderHistory SagasProcessOrderHistory);
 
     /**
      * 根据id删除处理
@@ -29,53 +29,53 @@ public interface SagasProcessOrderHistoryService {
 
     /**
      * 根据id更新处理
-     * @param sagasProcessOrder
+     * @param SagasProcessOrderHistory
      * @return
      */
-    int updateByProcessNoAndStatus(SagasProcessOrder sagasProcessOrder, Integer status);
+    int updateByProcessNoAndStatus(SagasProcessOrderHistory SagasProcessOrderHistory, Integer status);
 
     /**
      * 根据id查询处理
      * @param id
      * @return
      */
-    SagasProcessOrder selectByOrderNoAndOrder(String orderNo, Integer order);
+    SagasProcessOrderHistory selectByOrderNoAndOrder(String orderNo, Integer order);
 
     /**
      * 根据id查询处理 加锁
      * @param id
      * @return
      */
-    SagasProcessOrder selectByIdForUpdate(Integer id);
+    SagasProcessOrderHistory selectByIdForUpdate(Integer id);
 
 
 
     /**
      * 根据条件查询信息列表
-     * @param sagasProcessOrderQuery
+     * @param SagasProcessOrderHistoryQuery
      * @return
      */
-    List<SagasProcessOrder> queryListByParam(SagasProcessOrderQuery sagasProcessOrderQuery);
+    List<SagasProcessOrderHistory> queryListByParam(SagasProcessOrderHistoryQuery SagasProcessOrderHistoryQuery);
 
     /**
      * 根据条件查询信息总数目
-     * @param sagasProcessOrderQuery
+     * @param SagasProcessOrderHistoryQuery
      * @return
      */
-    Long queryCountByParam(SagasProcessOrderQuery sagasProcessOrderQuery);
+    Long queryCountByParam(SagasProcessOrderHistoryQuery SagasProcessOrderHistoryQuery);
 
     /**
      * 根据订单号查询过程单据
      * @param orderNo
      * @return
      */
-    List<SagasProcessOrder> queryByOrderNo(String orderNo);
+    List<SagasProcessOrderHistory> queryByOrderNo(String orderNo);
 
     /**
      * 根据订单状态查询过程单据
      * @param statusEnum
      * @return
      */
-    List<SagasProcessOrder> queryByStatus(ProcessStatusEnum statusEnum);
+    List<SagasProcessOrderHistory> queryByStatus(ProcessStatusEnum statusEnum);
 
 }
