@@ -21,9 +21,9 @@ public class Demo {
     @Test
     public void testCommit(){
         LinkedList<SagasDate> sagasDates = new LinkedList<>();
-        sagasDates.add(getSagasDate(true));
-        sagasDates.add(getSagasDate(true));
-        sagasDates.add(getSagasDate(true));
+        sagasDates.add(getSagasDate1(true));
+        sagasDates.add(getSagasDate2(true));
+        sagasDates.add(getSagasDate3(true));
         MulStatusEnum ceshi = sagasHandler.handler(sagasDates, SeqCreateUtil.create("ceshi"), 1);
         System.out.println(ceshi.getMsg());
 
@@ -31,13 +31,13 @@ public class Demo {
     @Test
     public void  testRollBack() {
         LinkedList<SagasDate> sagasDates = new LinkedList<>();
-        sagasDates.add(getSagasDate(true));
-        sagasDates.add(getSagasDate(true));
-        sagasDates.add(getSagasDate(false));
+        sagasDates.add(getSagasDate1(true));
+        sagasDates.add(getSagasDate2(true));
+        sagasDates.add(getSagasDate3(false));
         MulStatusEnum ceshi = sagasHandler.handler(sagasDates, SeqCreateUtil.create("ceshi"), 1);
         System.out.println(ceshi.getMsg());
     }
-    private SagasDate getSagasDate(boolean b) {
+    private SagasDate getSagasDate1(boolean b) {
         SagasProcessorImpl1 processorImpl1 = new SagasProcessorImpl1();
         SagasContext<Boolean> context1 = new SagasContext<>();
         context1.setParam(b);
@@ -45,6 +45,26 @@ public class Demo {
         SagasDate sagasDate1 = new SagasDate();
         sagasDate1.setContext(context1);
         sagasDate1.setProcessor(processorImpl1);
+        return sagasDate1;
+    }
+    private SagasDate getSagasDate2(boolean b) {
+        SagasProcessorImpl2 processorImpl2 = new SagasProcessorImpl2();
+        SagasContext<Boolean> context1 = new SagasContext<>();
+        context1.setParam(b);
+
+        SagasDate sagasDate1 = new SagasDate();
+        sagasDate1.setContext(context1);
+        sagasDate1.setProcessor(processorImpl2);
+        return sagasDate1;
+    }
+    private SagasDate getSagasDate3(boolean b) {
+        SagasProcessorImpl3 processorImpl3 = new SagasProcessorImpl3();
+        SagasContext<Boolean> context1 = new SagasContext<>();
+        context1.setParam(b);
+
+        SagasDate sagasDate1 = new SagasDate();
+        sagasDate1.setContext(context1);
+        sagasDate1.setProcessor(processorImpl3);
         return sagasDate1;
     }
 }
