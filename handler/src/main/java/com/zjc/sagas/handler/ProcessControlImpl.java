@@ -140,11 +140,10 @@ public class ProcessControlImpl implements ProcessControl {
     }
     private MulStatusEnum getRollMulstatus(Map result, int size){
         MulStatusEnum mulstatus = this.getCommitMulstatus(result, size);
-        if (mulstatus == MulStatusEnum.ROLL) {
-            return MulStatusEnum.FAIL;
-        }else {
-            return mulstatus;
+        if (mulstatus == MulStatusEnum.ING) {
+            return MulStatusEnum.RING;
         }
+        return mulstatus;
     }
     private void updateProcessOrder(String orderNo) {
         SagasProcessOrderQuery query = new SagasProcessOrderQuery();
