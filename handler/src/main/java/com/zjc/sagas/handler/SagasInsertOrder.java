@@ -49,7 +49,7 @@ public class SagasInsertOrder {
         int temp = 0;
         for(SagasDate sagasDate : list){
             SagasProcessOrder processOrder = new SagasProcessOrder();
-            processOrder.setClassName(sagasDate.getProcessor().getClass().getName());
+            processOrder.setClassName(sagasDate.getProcessor().getName());
             processOrder.setStatus(ProcessStatusEnum.INIT.getType());
             processOrder.setReSend(0);
             processOrder.setProcessNo(SeqCreateUtil.create("process"));

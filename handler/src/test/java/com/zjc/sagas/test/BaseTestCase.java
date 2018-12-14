@@ -1,5 +1,5 @@
 
-package test;
+package com.zjc.sagas.test;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

@@ -1,10 +1,13 @@
-package test;
+package com.zjc.sagas.test;
 
 import com.zjc.sagas.enums.MulStatusEnum;
 import com.zjc.sagas.handler.SagasHandler;
+import com.zjc.sagas.job.SagasIngJob;
+import com.zjc.sagas.job.SagasRingJob;
 import com.zjc.sagas.model.SagasContext;
 import com.zjc.sagas.model.SagasDate;
 import com.zjc.sagas.utils.SeqCreateUtil;
+import com.zjc.sagas.utils.SpringContextUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,10 @@ import java.util.LinkedList;
 public class Demo {
     @Autowired
     private SagasHandler sagasHandler;
+    @Autowired
+    private SagasIngJob sagasIngJob;
+    @Autowired
+    private SagasRingJob sagasRingJob;
     @Test
     public void testCommit(){
         LinkedList<SagasDate> sagasDates = new LinkedList<>();
@@ -43,6 +50,12 @@ public class Demo {
             System.out.println(ceshi.getMsg());
         }
     }
+    @Test
+    public void testIng() throws Exception{
+//        Object bean = SpringContextUtil.getBean(Class.forName(sagasIngJob.getClass().getName()));
+        sagasIngJob.excute();
+        sagasRingJob.excute();
+    }
     private SagasDate getSagasDate1(boolean b) {
         SagasProcessorImpl1 processorImpl1 = new SagasProcessorImpl1();
         SagasContext<Boolean> context1 = new SagasContext<>();
@@ -50,17 +63,16 @@ public class Demo {
 
         SagasDate sagasDate1 = new SagasDate();
         sagasDate1.setContext(context1);
-        sagasDate1.setProcessor(processorImpl1);
+        sagasDate1.setProcessor(SagasProcessorImpl1.class);
         return sagasDate1;
     }
     private SagasDate getSagasDate2(boolean b) {
-        SagasProcessorImpl2 processorImpl2 = new SagasProcessorImpl2();
         SagasContext<Boolean> context1 = new SagasContext<>();
         context1.setParam(b);
 
         SagasDate sagasDate1 = new SagasDate();
         sagasDate1.setContext(context1);
-        sagasDate1.setProcessor(processorImpl2);
+        sagasDate1.setProcessor(SagasProcessorImpl2.class);
         return sagasDate1;
     }
     private SagasDate getSagasDate3(boolean b) {
@@ -70,7 +82,7 @@ public class Demo {
 
         SagasDate sagasDate1 = new SagasDate();
         sagasDate1.setContext(context1);
-        sagasDate1.setProcessor(processorImpl3);
+        sagasDate1.setProcessor(SagasProcessorImpl3.class);
         return sagasDate1;
     }
 }

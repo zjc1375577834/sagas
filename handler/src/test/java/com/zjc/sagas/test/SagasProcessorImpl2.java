@@ -1,12 +1,14 @@
-package test;
+package com.zjc.sagas.test;
 
 import com.zjc.sagas.annotation.Sagas;
 import com.zjc.sagas.enums.ProcessStatusEnum;
 import com.zjc.sagas.interfaces.SagasProcessor;
 import com.zjc.sagas.model.SagasContext;
+import org.springframework.stereotype.Service;
 
-@Sagas
-public class SagasProcessorImpl3 implements SagasProcessor {
+@Sagas(isOrder = false)
+@Service
+public class SagasProcessorImpl2 implements SagasProcessor {
     @Override
     public ProcessStatusEnum doCommit(SagasContext context) {
         Boolean param = (Boolean) context.getParam();

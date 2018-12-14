@@ -29,7 +29,7 @@ public class AnnotationDistribute  {
         return handler.rollbackQuery(sagasDate);
     }
     private AnnotationHandler getHandler(SagasDate sagasDate) {
-        Class<? extends SagasProcessor> aClass = sagasDate.getProcessor().getClass();
+        Class<? extends SagasProcessor> aClass = sagasDate.getProcessor();
         SagasMethod annotation = aClass.getAnnotation(SagasMethod.class);
         String key = "";
         if (annotation != null) {

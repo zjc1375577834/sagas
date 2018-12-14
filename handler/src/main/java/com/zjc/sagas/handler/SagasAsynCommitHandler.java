@@ -232,8 +232,6 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
             throw new IllegalArgumentException("订单状态不合法");
         }
         SagasDate sagasDate = ContextUtils.get(orderNo,order);
-        SagasProcessor processor = sagasDate.getProcessor();
-        SagasContext context = sagasDate.getContext();
         ProcessStatusEnum processStatusEnum = annotationDistribute.rollbackHandler(sagasDate);
         sagasProcessOrder.setStatus(processStatusEnum.getType());
         int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);

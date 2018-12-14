@@ -12,6 +12,7 @@ import java.util.List;
  * 服务重启时候执行的job
  * 处理服务中断流程
  */
+@Service
 public class SagasIngJob {
     @Autowired
    private SagasGetStatus4Job sagasGetStatus4Job;

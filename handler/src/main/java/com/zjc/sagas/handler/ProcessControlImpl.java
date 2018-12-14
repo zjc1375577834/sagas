@@ -113,7 +113,7 @@ public class ProcessControlImpl implements ProcessControl {
         return resultEnum;
     }
     private boolean getAnnotion(SagasDate sagasDate) {
-        Class<? extends SagasProcessor> aClass = sagasDate.getProcessor().getClass();
+        Class<? extends SagasProcessor> aClass = sagasDate.getProcessor();
         Sagas annotation = aClass.getAnnotation(Sagas.class);
         if (annotation == null) {
             throw new IllegalArgumentException("过程异常,缺少注解");

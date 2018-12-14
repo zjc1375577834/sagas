@@ -1,4 +1,4 @@
-package test;
+package com.zjc.sagas.test;
 
 
 import com.alibaba.fastjson.JSON;

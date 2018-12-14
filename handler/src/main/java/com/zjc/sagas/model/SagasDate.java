@@ -7,7 +7,7 @@ import com.zjc.sagas.interfaces.SagasProcessor;
  */
 public class SagasDate {
     private SagasContext context;
-    private SagasProcessor processor;
+    private Class<?extends SagasProcessor> processor;
 
     public SagasContext getContext() {
         return context;
@@ -17,11 +17,11 @@ public class SagasDate {
         this.context = context;
     }
 
-    public SagasProcessor getProcessor() {
+    public Class<?extends SagasProcessor> getProcessor() {
         return processor;
     }
 
-    public void setProcessor(SagasProcessor processor) {
+    public void setProcessor(Class<?extends SagasProcessor> processor) {
         this.processor = processor;
     }
 }
