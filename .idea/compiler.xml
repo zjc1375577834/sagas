@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="handler" />
+        <module name="sagas" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="handler" target="1.8" />
+      <module name="sagas" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

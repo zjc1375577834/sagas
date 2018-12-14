@@ -34,8 +34,14 @@ public class Demo {
         sagasDates.add(getSagasDate1(true));
         sagasDates.add(getSagasDate2(true));
         sagasDates.add(getSagasDate3(false));
-        MulStatusEnum ceshi = sagasHandler.handler(sagasDates, SeqCreateUtil.create("ceshi"), 1);
-        System.out.println(ceshi.getMsg());
+        sagasDates.add(getSagasDate1(true));
+        for (int i =0 ;i <10;i++) {
+            long l = System.currentTimeMillis();
+            MulStatusEnum ceshi = sagasHandler.handler(sagasDates, SeqCreateUtil.create("ceshi"), 1);
+            long l1 = System.currentTimeMillis();
+            System.out.println(l1 - l);
+            System.out.println(ceshi.getMsg());
+        }
     }
     private SagasDate getSagasDate1(boolean b) {
         SagasProcessorImpl1 processorImpl1 = new SagasProcessorImpl1();

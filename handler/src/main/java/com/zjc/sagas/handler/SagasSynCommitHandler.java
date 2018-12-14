@@ -111,7 +111,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
         }
         SagasProcessOrder sagasProcessOrder = sagasProcessOrderService.selectByOrderNoAndOrder(orderNo, order);
         Integer status = sagasProcessOrder.getStatus();
-        if (!sagasProcessOrder.getMothedName().equals("doCommit") || status != ProcessStatusEnum.FAIL.getType()) {
+        if (!sagasProcessOrder.getMothedName().equals("doCommit") || (status != ProcessStatusEnum.FAIL.getType() && status != ProcessStatusEnum.INIT.getType() && status != ProcessStatusEnum.NOBEGIN.getType() )) {
             throw new IllegalArgumentException("订单状态不合法");
         }
         sagasProcessOrder.setStatus(ProcessStatusEnum.SUC.getType());
@@ -229,7 +229,7 @@ public class SagasSynCommitHandler implements ProcessorCommit {
         }
         SagasProcessOrder sagasProcessOrder = sagasProcessOrderService.selectByOrderNoAndOrder(orderNo, order);
         Integer status = sagasProcessOrder.getStatus();
-        if (!sagasProcessOrder.getMothedName().equals("doCancel") || status != ProcessStatusEnum.INIT.getType() && status != ProcessStatusEnum.NOBEGIN.getType()) {
+        if (!sagasProcessOrder.getMothedName().equals("doCancel") || (status != ProcessStatusEnum.INIT.getType() && status != ProcessStatusEnum.NOBEGIN.getType())) {
             throw new IllegalArgumentException("订单状态不合法");
         }
         SagasDate sagasDate = ContextUtils.get(orderNo,order);
