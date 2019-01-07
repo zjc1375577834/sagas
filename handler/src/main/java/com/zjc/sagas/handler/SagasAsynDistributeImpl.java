@@ -46,6 +46,8 @@ public class SagasAsynDistributeImpl implements ProcessorDistribute {
                     sagasBusinessLockDao.updateByOrderNo(businessLock);
                     if (businessLock.getThread() == 0) {
                         ContextUtils.delete(orderNo,type);
+                        sagasBusinessLockDao.deleteById(lock.getId());
+
                     }
                 }
 

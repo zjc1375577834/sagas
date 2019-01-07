@@ -55,8 +55,10 @@ public class ProcessControlImpl implements ProcessControl {
         lock2.setOrderNo(orderNo);
         lock2.setType(type);
         lock2.setCreateTime(new Date());
-        lock2.setThread(0);
-        int insert = sagasBusinessLockDao.insert(lock2);
+        lock2.setThread(1);
+        sagasBusinessLockDao.insert(lock2);
+        SagasBusinessLock select = sagasBusinessLockDao.selectByOrderNo(orderNo);
+
         ContextUtils.put(orderNo,list,type);
         HashMap<String, Object> result = new HashMap<>();
         SagasOrder sagasOrder = sagasOrderService.selectByOrderNo(orderNo);
@@ -75,7 +77,7 @@ public class ProcessControlImpl implements ProcessControl {
                     if (annotion) {
                         sagasSynDistribute.distribute(orderNo,i,result,type);
                     }else {
-                        SagasBusinessLock businessLock = sagasBusinessLockDao.selectByIdForUpdate(insert);
+                        SagasBusinessLock businessLock = sagasBusinessLockDao.selectByIdForUpdate(select.getId());
                         businessLock.setThread(businessLock.getThread()+1);
                         sagasBusinessLockDao.updateByOrderNo(businessLock);
 
@@ -108,7 +110,7 @@ public class ProcessControlImpl implements ProcessControl {
                     if (annotion) {
                         sagasSynDistribute.distribute(orderNo,i,result,type);
                     }else {
-                        SagasBusinessLock businessLock = sagasBusinessLockDao.selectByIdForUpdate(insert);
+                        SagasBusinessLock businessLock = sagasBusinessLockDao.selectByIdForUpdate(select.getId());
 
                         businessLock.setThread(businessLock.getThread()+1);
                         sagasBusinessLockDao.updateByOrderNo(businessLock);
@@ -134,11 +136,13 @@ public class ProcessControlImpl implements ProcessControl {
             sagasOrderService.updateByOrderNoAndStatus(sagasOrder, anEnum.getType());
         }
         SagasBusinessLock lock1 = sagasBusinessLockDao.selectByOrderNo(orderNo);
+        lock1.setThread(lock1.getThread()-1);
+        sagasBusinessLockDao.updateByOrderNo(lock1);
         if (lock1 != null) {
             if (lock1.getThread() == 0) {
-                ContextUtils.delete(orderNo,type);
+                ContextUtils.delete(orderNo, type);
+                sagasBusinessLockDao.deleteById(lock1.getId());
             }
-            sagasBusinessLockDao.deleteById(lock1.getId());
         }
 
         return resultEnum;

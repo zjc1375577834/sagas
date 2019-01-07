@@ -17,7 +17,7 @@ public class ContextUtils {
     public static List<SagasDate> get(String key,Integer type) {
         return map.get(key+type);
     }
-    public static SagasDate get(String key ,Integer type, Integer order) {
+    public static SagasDate get(String key ,Integer order, Integer type) {
         List<SagasDate> list = map.get(key+type);
         if (list == null) {
             throw new IllegalArgumentException("当前缓存不存在该信息");
