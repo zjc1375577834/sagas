@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.zjc.sagas.dao.SagasBusinessLockDao">
+
+    <!-- 返回结果集 -->
+    <resultMap id="SagasOrderMap" type="com.zjc.sagas.model.SagasBusinessLock">
+        <result column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="thread" property="thread"/>
+        <result column="type" property="type"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+    <!-- 字段列表信息 -->
+    <sql id="_field_list">
+        `id`,
+        `order_no`,
+        `thread`,
+        `type`,
+        `create_time`,
+        `modify_time`
+    </sql>
+
+    <!-- 值列表信息 -->
+    <sql id="_value_list">
+        #{id},
+        #{orderNo},
+        #{thread},
+        #{type},
+        #{createTime},
+        #{modifyTime}
+    </sql>
+
+    <!-- 索引条件查询 -->
+    <sql id="_index_condition_where">
+        <if test="orderNo != null">
+            AND `order_no` = #{orderNo}
+        </if>
+
+    </sql>
+
+    <!-- 普通条件查询 -->
+    <sql id="_common_where">
+        <if test="type != null">
+            AND `type` = #{type}
+        </if>
+    </sql>
+
+    <!-- 范围条件查询 -->
+    <sql id="_region_where">
+        <if test="egtCreateTime != null">
+            AND `create_time` >= #{egtCreateTime}
+        </if>
+        <if test="ltCreateTime != null">
+            <![CDATA[
+            AND `create_time` < #{ltCreateTime}
+            ]]>
+        </if>
+    </sql>
+
+    <!-- 通用排序 -->
+    <sql id="_common_sorts">
+        <if test="sorts != null">
+            ORDER BY
+            <foreach collection="sorts" item="item" separator=",">
+            ${item.columnName} ${item.sortMode.mode}
+            </foreach>
+        </if>
+    </sql>
+
+    <!-- where -->
+    <sql id="_where">
+        <trim prefix="where" prefixOverrides="and" suffix="">
+            <include refid="_index_condition_where"/>
+            <include refid="_common_where"/>
+            <include refid="_region_where"/>
+        </trim>
+    </sql>
+
+
+    <!-- 插入处理 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+        INSERT  INTO `sagas_business_lock`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="_field_list"/>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="_value_list"/>
+        </trim>
+    </insert>
+
+    <!-- 根据id更新处理 -->
+    <update id="updateByOrderNo" parameterType="java.util.Map">
+        UPDATE `sagas_business_lock`
+        <trim prefix="set" suffixOverrides=",">
+            <if test="sagasOrder.orderNo != null">
+                `order_no`=#{sagasOrder.orderNo},
+            </if>
+            <if test="sagasOrder.thread != null">
+                `thread`=#{sagasOrder.thread},
+            </if>
+            <if test="sagasOrder.type != null">
+                `type`=#{sagasOrder.type},
+            </if>
+            `modify_time`=#{sagasOrder.modifyTime}
+        </trim>
+        WHERE `order_no` = #{sagasOrder.orderNo}  limit 1
+    </update>
+
+    <!-- 根据id查询处理 -->
+    <select id="selectByOrderNo" resultMap="SagasOrderMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="_field_list"/>
+        FROM `sagas_business_lock`
+    WHERE `order_no` = #{orderNo} limit 1
+    </select>
+
+
+    <!-- 根据id查询处理 加锁 -->
+    <select id="selectByIdForUpdate" resultMap="SagasOrderMap">
+        SELECT
+        <include refid="_field_list"/>
+        FROM `sagas_business_lock`
+        WHERE `id` = #{id} limit 1 for update 
+    </select>
+
+    <!-- 根据id删除处理 -->
+    <delete id="deleteById">
+        DELETE FROM `sagas_business_lock` WHERE `id` = #{id} limit 1 
+    </delete>
+
+
+
+</mapper>

@@ -62,7 +62,6 @@ public class SagasInsertOrder {
             sagasProcessOrderHistoryService.insert(BeanCopyUtils.copy(processOrder));
             temp++;
         }
-        ContextUtils.put(orderNo,list);
         return true;
     }
 

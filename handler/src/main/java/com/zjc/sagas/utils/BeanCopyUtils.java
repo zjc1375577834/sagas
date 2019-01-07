@@ -1,9 +1,6 @@
 package com.zjc.sagas.utils;
 
-import com.zjc.sagas.model.SagasOrder;
-import com.zjc.sagas.model.SagasOrderHistory;
-import com.zjc.sagas.model.SagasProcessOrder;
-import com.zjc.sagas.model.SagasProcessOrderHistory;
+import com.zjc.sagas.model.*;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.util.CollectionUtils;
 
@@ -95,12 +92,44 @@ public class BeanCopyUtils {
         history.setType(sagasOrder.getType());
         return history;
     }
+    public static SagasFlow copy(SagasOrderHistory sagasOrder) {
+        if (sagasOrder == null) {
+            return null;
+        }
+        SagasFlow history = new SagasFlow();
+        history.setCreateTime(sagasOrder.getCreateTime());
+        history.setId(sagasOrder.getId());
+        history.setModifyTime(sagasOrder.getModifyTime());
+        history.setOrderNo(sagasOrder.getOrderNo());
+        history.setParamHash(sagasOrder.getParamHash());
+        history.setStatus(sagasOrder.getStatus());
+        history.setType(sagasOrder.getType());
+        return history;
+    }
 
     public static SagasProcessOrderHistory copy(SagasProcessOrder processOrder) {
         if (processOrder == null) {
             return null;
         }
         SagasProcessOrderHistory history = new SagasProcessOrderHistory();
+        history.setClassName(processOrder.getClassName());
+        history.setStatus(processOrder.getStatus());
+        history.setReSend(processOrder.getReSend());
+        history.setProcessNo(processOrder.getProcessNo());
+        history.setParam(processOrder.getParam());
+        history.setOrderNo(processOrder.getOrderNo());
+        history.setMothedName(processOrder.getMothedName());
+        history.setModifyTime(processOrder.getModifyTime());
+        history.setOrder(processOrder.getOrder());
+        history.setId(processOrder.getId());
+        history.setCreateTime(processOrder.getCreateTime());
+        return history;
+    }
+    public static SagasProcessFlow copy(SagasProcessOrderHistory processOrder) {
+        if (processOrder == null) {
+            return null;
+        }
+        SagasProcessFlow history = new SagasProcessFlow();
         history.setClassName(processOrder.getClassName());
         history.setStatus(processOrder.getStatus());
         history.setReSend(processOrder.getReSend());

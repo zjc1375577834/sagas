@@ -1,6 +1,7 @@
 package com.zjc.sagas.handler;
 
 import com.zjc.sagas.annotation.Sagas;
+import com.zjc.sagas.dao.SagasBusinessLockDao;
 import com.zjc.sagas.enums.MulStatusEnum;
 import com.zjc.sagas.enums.ProcessStatusEnum;
 import com.zjc.sagas.interfaces.ProcessControl;
@@ -12,10 +13,12 @@ import com.zjc.sagas.service.SagasOrderService;
 import com.zjc.sagas.service.SagasProcessOrderHistoryService;
 import com.zjc.sagas.service.SagasProcessOrderService;
 import com.zjc.sagas.utils.BeanCopyUtils;
+import com.zjc.sagas.utils.ContextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,11 +40,24 @@ public class ProcessControlImpl implements ProcessControl {
     private SagasProcessOrderService sagasProcessOrderService;
     @Autowired
     private SagasProcessOrderHistoryService sagasProcessOrderHistoryService;
+    @Autowired
+    private SagasBusinessLockDao sagasBusinessLockDao;
     @Override
     public MulStatusEnum control(List<SagasDate> list, String orderNo, Integer type) {
         if (list == null || list.size() ==0 || StringUtils.isEmpty(type)) {
             throw new IllegalArgumentException("参数不能为空");
         }
+        SagasBusinessLock lock = sagasBusinessLockDao.selectByOrderNo(orderNo);
+        if (lock != null) {
+            throw new IllegalArgumentException("当前订单正字执行");
+        }
+        SagasBusinessLock lock2 = new SagasBusinessLock();
+        lock2.setOrderNo(orderNo);
+        lock2.setType(type);
+        lock2.setCreateTime(new Date());
+        lock2.setThread(0);
+        int insert = sagasBusinessLockDao.insert(lock2);
+        ContextUtils.put(orderNo,list,type);
         HashMap<String, Object> result = new HashMap<>();
         SagasOrder sagasOrder = sagasOrderService.selectByOrderNo(orderNo);
         Integer orderStatus = sagasOrder.getStatus();
@@ -57,9 +73,13 @@ public class ProcessControlImpl implements ProcessControl {
                 }else {
                     boolean annotion = this.getAnnotion(list.get(i));
                     if (annotion) {
-                        sagasSynDistribute.distribute(orderNo,i,result);
+                        sagasSynDistribute.distribute(orderNo,i,result,type);
                     }else {
-                        sagasAsynDistribute.distribute(orderNo,i,result);
+                        SagasBusinessLock businessLock = sagasBusinessLockDao.selectByIdForUpdate(insert);
+                        businessLock.setThread(businessLock.getThread()+1);
+                        sagasBusinessLockDao.updateByOrderNo(businessLock);
+
+                        sagasAsynDistribute.distribute(orderNo,i,result,type);
                     }
                 }
                 isSend = (Boolean)result.get("isSend");
@@ -86,9 +106,13 @@ public class ProcessControlImpl implements ProcessControl {
                 }else {
                     boolean annotion = this.getAnnotion(list.get(i));
                     if (annotion) {
-                        sagasSynDistribute.distribute(orderNo,i,result);
+                        sagasSynDistribute.distribute(orderNo,i,result,type);
                     }else {
-                        sagasAsynDistribute.distribute(orderNo,i,result);
+                        SagasBusinessLock businessLock = sagasBusinessLockDao.selectByIdForUpdate(insert);
+
+                        businessLock.setThread(businessLock.getThread()+1);
+                        sagasBusinessLockDao.updateByOrderNo(businessLock);
+                        sagasAsynDistribute.distribute(orderNo,i,result,type);
                     }
                 }
                 isSend = (Boolean)result.get("isSend");
@@ -108,6 +132,13 @@ public class ProcessControlImpl implements ProcessControl {
             this.updateProcessOrder(orderNo);
         }else {
             sagasOrderService.updateByOrderNoAndStatus(sagasOrder, anEnum.getType());
+        }
+        SagasBusinessLock lock1 = sagasBusinessLockDao.selectByOrderNo(orderNo);
+        if (lock1 != null) {
+            if (lock1.getThread() == 0) {
+                ContextUtils.delete(orderNo,type);
+            }
+            sagasBusinessLockDao.deleteById(lock1.getId());
         }
 
         return resultEnum;

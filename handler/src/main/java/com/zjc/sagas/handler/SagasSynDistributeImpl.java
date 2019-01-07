@@ -24,7 +24,7 @@ public class SagasSynDistributeImpl implements ProcessorDistribute {
     @Autowired
     private SagasSynCommitHandler sagasSynCommitHandler;
     @Override
-    public void distribute(String orderNo, Integer order, Map<String, Object> result) {
+    public void distribute(String orderNo, Integer order, Map<String, Object> result,Integer type) {
         SagasOrder sagasOrder = sagasOrderService.selectByOrderNo(orderNo);
         SagasProcessOrder sagasProcessOrder = sagasProcessOrderService.selectByOrderNoAndOrder(orderNo, order);
         String mothedName = sagasProcessOrder.getMothedName();
@@ -33,21 +33,21 @@ public class SagasSynDistributeImpl implements ProcessorDistribute {
         if (sagasOrder.getStatus() == MulStatusEnum.INIT.getType() || sagasOrder.getStatus() == MulStatusEnum.ING.getType()) {
             if (roll) {
                 if(statusEnum.equals(ProcessStatusEnum.INIT) || statusEnum.equals(ProcessStatusEnum.NOBEGIN)) {
-                    sagasSynCommitHandler.rinitRollBack(orderNo,order,result);
+                    sagasSynCommitHandler.rinitRollBack(orderNo,order,result,type);
                 } else if (statusEnum.equals(ProcessStatusEnum.ING)) {
-                    sagasSynCommitHandler.ringRollBack(orderNo,order,result);
+                    sagasSynCommitHandler.ringRollBack(orderNo,order,result,type);
                 }else if (statusEnum.equals(ProcessStatusEnum.FAIL)) {
-                    sagasSynCommitHandler.rfailRollBack(orderNo,order,result);
+                    sagasSynCommitHandler.rfailRollBack(orderNo,order,result,type);
                 } else {
                     return;
                 }
             }else {
                if(statusEnum.equals(ProcessStatusEnum.INIT) || statusEnum.equals(ProcessStatusEnum.NOBEGIN)) {
-                   sagasSynCommitHandler.initCommit(orderNo,order,result);
+                   sagasSynCommitHandler.initCommit(orderNo,order,result,type);
                } else if (statusEnum.equals(ProcessStatusEnum.ING)) {
-                   sagasSynCommitHandler.ingCommit(orderNo,order,result);
+                   sagasSynCommitHandler.ingCommit(orderNo,order,result,type);
                }else if (statusEnum.equals(ProcessStatusEnum.FAIL)) {
-                   sagasSynCommitHandler.failRollBack(orderNo,order,result);
+                   sagasSynCommitHandler.failRollBack(orderNo,order,result,type);
                } else {
                    return;
                }
@@ -55,23 +55,23 @@ public class SagasSynDistributeImpl implements ProcessorDistribute {
         }else if(sagasOrder.getStatus() == MulStatusEnum.ROLL.getType() || sagasOrder.getStatus() == MulStatusEnum.RING.getType()){
             if (roll) {
                 if(statusEnum.equals(ProcessStatusEnum.INIT) || statusEnum.equals(ProcessStatusEnum.NOBEGIN)) {
-                    sagasSynCommitHandler.rinitRollBack(orderNo,order,result);
+                    sagasSynCommitHandler.rinitRollBack(orderNo,order,result,type);
                 } else if (statusEnum.equals(ProcessStatusEnum.ING)) {
-                    sagasSynCommitHandler.ringRollBack(orderNo,order,result);
+                    sagasSynCommitHandler.ringRollBack(orderNo,order,result,type);
                 }else if (statusEnum.equals(ProcessStatusEnum.FAIL)) {
-                    sagasSynCommitHandler.rfailRollBack(orderNo,order,result);
+                    sagasSynCommitHandler.rfailRollBack(orderNo,order,result,type);
                 } else {
                     return;
                 }
             }else {
                 if(statusEnum.equals(ProcessStatusEnum.INIT) || statusEnum.equals(ProcessStatusEnum.NOBEGIN)) {
-                    sagasSynCommitHandler.failRollBack(orderNo,order,result);
+                    sagasSynCommitHandler.failRollBack(orderNo,order,result,type);
                 } else if (statusEnum.equals(ProcessStatusEnum.ING)) {
-                    sagasSynCommitHandler.ingRollBack(orderNo,order,result);
+                    sagasSynCommitHandler.ingRollBack(orderNo,order,result,type);
                 }else if (statusEnum.equals(ProcessStatusEnum.FAIL)) {
-                    sagasSynCommitHandler.failRollBack(orderNo,order,result);
+                    sagasSynCommitHandler.failRollBack(orderNo,order,result,type);
                 } else {
-                    sagasSynCommitHandler.sucRollBack(orderNo,order,result);
+                    sagasSynCommitHandler.sucRollBack(orderNo,order,result,type);
                 }
             }
         }else {

@@ -1,12 +1,14 @@
 package com.zjc.sagas.service.impl;
 
 
+import com.zjc.sagas.dao.SagasFlowDao;
 import com.zjc.sagas.dao.SagasOrderHistoryDao;
 import com.zjc.sagas.enums.MulStatusEnum;
 import com.zjc.sagas.model.SagasOrderHistory;
 import com.zjc.sagas.query.SagasOrderHistoryQuery;
 import com.zjc.sagas.query.SagasProcessOrderHistoryQuery;
 import com.zjc.sagas.service.SagasOrderHistoryService;
+import com.zjc.sagas.utils.BeanCopyUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -22,19 +24,22 @@ public class SagasOrderHistoryServiceImpl implements SagasOrderHistoryService {
 
     @Resource
     private SagasOrderHistoryDao SagasOrderHistoryDao;
+    @Resource
+    private SagasFlowDao sagasFlowDao;
 
 
 
     /**
      * 插入处理
-     * @param SagasOrderHistory
+     * @param
      * @return
      */
     @Override
-    public int insert(SagasOrderHistory SagasOrderHistory) {
-        Assert.notNull(SagasOrderHistory, "插入对象为空");
+    public int insert(SagasOrderHistory sagasOrderHistory) {
+        Assert.notNull(sagasOrderHistory, "插入对象为空");
 
-        return SagasOrderHistoryDao.insert(SagasOrderHistory);
+        sagasFlowDao.insert(BeanCopyUtils.copy(sagasOrderHistory));
+        return SagasOrderHistoryDao.insert(sagasOrderHistory);
     }
 
     /**
@@ -51,15 +56,16 @@ public class SagasOrderHistoryServiceImpl implements SagasOrderHistoryService {
 
     /**
      * 根据id更新处理
-     * @param SagasOrderHistory
+     * @param sagasOrderHistory
      * @return
      */
     @Override
-    public int updateByOrderNoAndStatus(SagasOrderHistory SagasOrderHistory, Integer status) {
-        Assert.notNull(SagasOrderHistory, "更新对象为空");
-        Assert.notNull(SagasOrderHistory.getOrderNo(), "更新对象orderNo为空");
+    public int updateByOrderNoAndStatus(SagasOrderHistory sagasOrderHistory, Integer status) {
+        Assert.notNull(sagasOrderHistory, "更新对象为空");
+        Assert.notNull(sagasOrderHistory.getOrderNo(), "更新对象orderNo为空");
+        sagasFlowDao.insert(BeanCopyUtils.copy(sagasOrderHistory));
 
-        return SagasOrderHistoryDao.updateByOrderNo(SagasOrderHistory,status);
+        return SagasOrderHistoryDao.updateByOrderNo(sagasOrderHistory,status);
     }
 
     /**

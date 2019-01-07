@@ -11,14 +11,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ContextUtils {
     private static Map<String, List<SagasDate>> map = new ConcurrentHashMap<>();
-    public static void put(String key,List<SagasDate> list) {
-        map.put(key,list);
+    public static void put(String key,List<SagasDate> list,Integer type) {
+        map.put(key+type,list);
     }
-    public static List<SagasDate> get(String key) {
-        return map.get(key);
+    public static List<SagasDate> get(String key,Integer type) {
+        return map.get(key+type);
     }
-    public static SagasDate get(String key , Integer order) {
-        List<SagasDate> list = map.get(key);
+    public static SagasDate get(String key ,Integer type, Integer order) {
+        List<SagasDate> list = map.get(key+type);
         if (list == null) {
             throw new IllegalArgumentException("当前缓存不存在该信息");
         }
@@ -27,7 +27,7 @@ public class ContextUtils {
         }
         return list.get(order);
     }
-    public static void  delete(String key){
-        map.remove(key);
+    public static void  delete(String key,Integer type){
+        map.remove(key+type);
     }
 }

@@ -28,7 +28,7 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
     @Autowired
     private AnnotationDistribute annotationDistribute;
     @Override
-    public void initCommit(String orderNo, Integer order, Map<String, Object> result) {
+    public void initCommit(String orderNo, Integer order, Map<String, Object> result,Integer type) {
         SagasOrder sagasOrder = sagasOrderService.selectByOrderNo(orderNo);
         if (sagasOrder.getStatus() != MulStatusEnum.INIT.getType() && sagasOrder.getStatus() != MulStatusEnum.ING.getType()) {
             throw new IllegalArgumentException("订单状态不合法");
@@ -38,7 +38,7 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
         if (status != ProcessStatusEnum.INIT.getType() && status != ProcessStatusEnum.NOBEGIN.getType() || !sagasProcessOrder.getMothedName().equals("doCommit")) {
             throw new IllegalArgumentException("订单状态不合法");
         }
-        SagasDate sagasDate = ContextUtils.get(orderNo, order);
+        SagasDate sagasDate = ContextUtils.get(orderNo, order,type);
         sagasProcessOrder.setStatus(ProcessStatusEnum.ING.getType());
 //        防止当还在发送请求出去前，又执行了回滚方法，导致先回滚后提交
         int j = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder,status );
@@ -59,15 +59,15 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
             } else if (ProcessStatusEnum.FAIL.equals(processStatusEnum)) {
                 result.put("isSend", false);
                 result.put(sagasProcessOrder.getOrder().toString(), MulStatusEnum.ROLL);
-                this.failRollBack(orderNo,order,result);
+                this.failRollBack(orderNo,order,result,type);
             } else {
-                this.ingCommit(orderNo,order,result);
+                this.ingCommit(orderNo,order,result,type);
             }
         }
     }
 
     @Override
-    public void ingCommit(String orderNo, Integer order, Map<String, Object> result) {
+    public void ingCommit(String orderNo, Integer order, Map<String, Object> result,Integer type) {
         SagasOrder sagasOrder = sagasOrderService.selectByOrderNo(orderNo);
         if (sagasOrder.getStatus() != MulStatusEnum.INIT.getType() && sagasOrder.getStatus() != MulStatusEnum.ING.getType()) {
             throw new IllegalArgumentException("订单状态不合法");
@@ -77,7 +77,7 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
         if (!sagasProcessOrder.getMothedName().equals("doCommit") || status != ProcessStatusEnum.ING.getType()) {
             throw new IllegalArgumentException("订单状态不合法");
         }
-        SagasDate sagasDate = ContextUtils.get(orderNo, order);
+        SagasDate sagasDate = ContextUtils.get(orderNo, order,type);
         ProcessStatusEnum processStatusEnum = annotationDistribute.handlerQuery(sagasDate);
         sagasProcessOrder.setStatus(processStatusEnum.getType());
         int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);
@@ -92,9 +92,9 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
             } else if (ProcessStatusEnum.FAIL.equals(processStatusEnum)) {
                 result.put("isSend", false);
                 result.put(sagasProcessOrder.getOrder().toString(), MulStatusEnum.ROLL);
-                this.failRollBack(orderNo,order,result);
+                this.failRollBack(orderNo,order,result,type);
             } else if(processStatusEnum.equals(ProcessStatusEnum.NOBEGIN) || ProcessStatusEnum.INIT.equals(processStatusEnum)){
-                this.initCommit(orderNo,order,result);
+                this.initCommit(orderNo,order,result,type);
             }else {
                 throw new IllegalArgumentException("订单状态异常");
             }
@@ -102,7 +102,7 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
     }
 
     @Override
-    public void failRollBack(String orderNo, Integer order, Map<String, Object> result) {
+    public void failRollBack(String orderNo, Integer order, Map<String, Object> result,Integer type) {
         SagasOrder sagasOrder = sagasOrderService.selectByOrderNo(orderNo);
         if (sagasOrder.getStatus() != MulStatusEnum.INIT.getType() && sagasOrder.getStatus() != MulStatusEnum.ING.getType()
                 && sagasOrder.getStatus() != MulStatusEnum.RING.getType() && sagasOrder.getStatus() != MulStatusEnum.ROLL.getType()) {
@@ -123,7 +123,7 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
     }
 
     @Override
-    public void sucRollBack(String orderNo, Integer order, Map<String, Object> result) {
+    public void sucRollBack(String orderNo, Integer order, Map<String, Object> result,Integer type) {
         SagasOrder sagasOrder = sagasOrderService.selectByOrderNo(orderNo);
         if (sagasOrder.getStatus() != MulStatusEnum.RING.getType() && sagasOrder.getStatus() != MulStatusEnum.ROLL.getType()) {
             throw new IllegalArgumentException("订单状态不合法");
@@ -133,7 +133,7 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
         if (sagasProcessOrder.getMothedName().equals("doCancel") || status != ProcessStatusEnum.SUC.getType()) {
             throw new IllegalArgumentException("订单状态不合法");
         }
-        SagasDate sagasDate = ContextUtils.get(orderNo, order);
+        SagasDate sagasDate = ContextUtils.get(orderNo, order,type);
         ProcessStatusEnum processStatusEnum = annotationDistribute.rollbackHandler(sagasDate);
         sagasProcessOrder.setStatus(processStatusEnum.getType());
         sagasProcessOrder.setMothedName("doCancel");
@@ -147,9 +147,9 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
             }else if(processStatusEnum.equals(ProcessStatusEnum.FAIL)){
                 result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.RFAIL);
                 result.put("isSend",false);
-                this.rfailRollBack(orderNo,order,result);
+                this.rfailRollBack(orderNo,order,result,type);
             }else {
-                this.rinitRollBack(orderNo,order,result);
+                this.rinitRollBack(orderNo,order,result,type);
             }
         }
     }
@@ -161,7 +161,7 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
      * @param result
      */
     @Override
-    public void ingRollBack(String orderNo, Integer order, Map<String, Object> result) {
+    public void ingRollBack(String orderNo, Integer order, Map<String, Object> result,Integer type) {
         SagasOrder sagasOrder = sagasOrderService.selectByOrderNo(orderNo);
         if (sagasOrder.getStatus() != MulStatusEnum.RING.getType() && sagasOrder.getStatus() != MulStatusEnum.ROLL.getType()) {
             throw new IllegalArgumentException("订单状态不合法");
@@ -171,16 +171,16 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
         if (sagasProcessOrder.getMothedName().equals("doCancel") || status != ProcessStatusEnum.ING.getType()) {
             throw new IllegalArgumentException("订单状态不合法");
         }
-        SagasDate sagasDate = ContextUtils.get(orderNo, order);
+        SagasDate sagasDate = ContextUtils.get(orderNo, order,type);
         ProcessStatusEnum processStatusEnum = annotationDistribute.handlerQuery(sagasDate);
         sagasProcessOrder.setStatus(processStatusEnum.getType());
         sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder,status);
         if (processStatusEnum.equals(ProcessStatusEnum.SUC)) {
-            this.sucRollBack(orderNo,order,result);
+            this.sucRollBack(orderNo,order,result,type);
         }else if(processStatusEnum.equals(ProcessStatusEnum.FAIL)){
-            this.failRollBack(orderNo,order,result);
+            this.failRollBack(orderNo,order,result,type);
         }else if(processStatusEnum.equals(ProcessStatusEnum.NOBEGIN) || ProcessStatusEnum.INIT.equals(processStatusEnum)) {
-            this.failRollBack(orderNo,order,result);
+            this.failRollBack(orderNo,order,result,type);
         }else if(processStatusEnum.equals(ProcessStatusEnum.ING)) {
 //            result.put("isSend",false);
             result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.RING);
@@ -190,7 +190,7 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
     }
 
     @Override
-    public void ringRollBack(String orderNo, Integer order, Map<String, Object> result) {
+    public void ringRollBack(String orderNo, Integer order, Map<String, Object> result,Integer type) {
         SagasOrder sagasOrder = sagasOrderService.selectByOrderNo(orderNo);
         if (sagasOrder.getStatus() != MulStatusEnum.RING.getType() && sagasOrder.getStatus() != MulStatusEnum.ROLL.getType()) {
             throw new IllegalArgumentException("订单状态不合法");
@@ -200,7 +200,7 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
         if (!sagasProcessOrder.getMothedName().equals("doCancel") || status != ProcessStatusEnum.ING.getType()) {
             throw new IllegalArgumentException("订单状态不合法");
         }
-        SagasDate sagasDate = ContextUtils.get(orderNo, order);
+        SagasDate sagasDate = ContextUtils.get(orderNo, order, type);
         ProcessStatusEnum processStatusEnum = annotationDistribute.rollbackQuery(sagasDate);
         sagasProcessOrder.setStatus(processStatusEnum.getType());
         int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);
@@ -211,17 +211,17 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
             }else if (processStatusEnum.equals(ProcessStatusEnum.FAIL)) {
                 result.put("isSend",false);
                 result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.RFAIL);
-                this.rfailRollBack(orderNo,order,result);
+                this.rfailRollBack(orderNo,order,result,type);
             }else if(processStatusEnum.equals(ProcessStatusEnum.ING)){
                 result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.RING);
             }else if(processStatusEnum.equals(ProcessStatusEnum.NOBEGIN) || ProcessStatusEnum.INIT.equals(processStatusEnum)) {
-                this.sucRollBack(orderNo,order,result);
+                this.sucRollBack(orderNo,order,result,type);
             }
         }
     }
 
     @Override
-    public void rinitRollBack(String orderNo, Integer order, Map<String, Object> result) {
+    public void rinitRollBack(String orderNo, Integer order, Map<String, Object> result,Integer type) {
         SagasOrder sagasOrder = sagasOrderService.selectByOrderNo(orderNo);
         if (sagasOrder.getStatus() != MulStatusEnum.RING.getType() && sagasOrder.getStatus() != MulStatusEnum.ROLL.getType()) {
             throw new IllegalArgumentException("订单状态不合法");
@@ -231,7 +231,7 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
         if (!sagasProcessOrder.getMothedName().equals("doCancel") || (status != ProcessStatusEnum.INIT.getType() && status != ProcessStatusEnum.NOBEGIN.getType())) {
             throw new IllegalArgumentException("订单状态不合法");
         }
-        SagasDate sagasDate = ContextUtils.get(orderNo,order);
+        SagasDate sagasDate = ContextUtils.get(orderNo,order, type);
         ProcessStatusEnum processStatusEnum = annotationDistribute.rollbackHandler(sagasDate);
         sagasProcessOrder.setStatus(processStatusEnum.getType());
         int i = sagasProcessOrderService.updateByProcessNoAndStatus(sagasProcessOrder, status);
@@ -243,15 +243,15 @@ public class SagasAsynCommitHandler implements ProcessorCommit {
             }else if(processStatusEnum.equals(ProcessStatusEnum.FAIL)){
                 result.put(sagasProcessOrder.getOrder().toString(),MulStatusEnum.RFAIL);
                 result.put("isSend",false);
-                this.rfailRollBack(orderNo,order,result);
+                this.rfailRollBack(orderNo,order,result,type);
             }else {
-                this.rinitRollBack(orderNo,order,result);
+                this.rinitRollBack(orderNo,order,result,type);
             }
         }
     }
 
     @Override
-    public void rfailRollBack(String orderNo, Integer order, Map<String, Object> result) {
+    public void rfailRollBack(String orderNo, Integer order, Map<String, Object> result,Integer type) {
         SagasOrder sagasOrder = sagasOrderService.selectByOrderNo(orderNo);
         if (sagasOrder.getStatus() != MulStatusEnum.RING.getType() && sagasOrder.getStatus() != MulStatusEnum.ROLL.getType()
                 && sagasOrder.getStatus() != MulStatusEnum.RFAIL.getType()) {

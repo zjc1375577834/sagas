@@ -12,7 +12,7 @@ public interface ProcessorCommit {
      * @param order
      * @param result
      */
-    void initCommit(String orderNo, Integer order, Map<String,Object> result);
+    void initCommit(String orderNo, Integer order, Map<String,Object> result,Integer type);
 
     /**
      * ING订单中执行CIMMIT方法
@@ -20,7 +20,7 @@ public interface ProcessorCommit {
      * @param order
      * @param result
      */
-    void ingCommit(String orderNo, Integer order, Map<String,Object> result);
+    void ingCommit(String orderNo, Integer order, Map<String,Object> result,Integer type);
 
     /**
      * 订单失败，开始执行回滚
@@ -28,7 +28,7 @@ public interface ProcessorCommit {
      * @param order
      * @param result
      */
-    void failRollBack(String orderNo, Integer order, Map<String,Object> result);
+    void failRollBack(String orderNo, Integer order, Map<String,Object> result,Integer type);
 
     /**
      * 订单成功执行回滚
@@ -36,7 +36,7 @@ public interface ProcessorCommit {
      * @param order
      * @param result
      */
-    void sucRollBack(String orderNo, Integer order, Map<String,Object> result);
+    void sucRollBack(String orderNo, Integer order, Map<String,Object> result,Integer type);
 
     /**
      * 订单处理中执行回滚
@@ -44,7 +44,7 @@ public interface ProcessorCommit {
      * @param order
      * @param result
      */
-    void ingRollBack(String orderNo, Integer order, Map<String,Object> result);
+    void ingRollBack(String orderNo, Integer order, Map<String,Object> result,Integer type);
 
     /**
      * 订单回滚处理中执行回滚
@@ -52,7 +52,7 @@ public interface ProcessorCommit {
      * @param order
      * @param result
      */
-    void ringRollBack(String orderNo, Integer order, Map<String,Object> result);
+    void ringRollBack(String orderNo, Integer order, Map<String,Object> result,Integer type);
 
     /**
      * 订单回滚未发送成执行回滚方法
@@ -60,7 +60,7 @@ public interface ProcessorCommit {
      * @param order
      * @param result
      */
-    void rinitRollBack(String orderNo, Integer order, Map<String,Object> result);
+    void rinitRollBack(String orderNo, Integer order, Map<String,Object> result,Integer type);
 
     /**
      * 订单回滚失败执行回滚方法
@@ -68,5 +68,5 @@ public interface ProcessorCommit {
      * @param order
      * @param result
      */
-    void rfailRollBack(String orderNo, Integer order, Map<String,Object> result);
+    void rfailRollBack(String orderNo, Integer order, Map<String,Object> result,Integer type);
 }

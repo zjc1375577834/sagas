@@ -1,11 +1,13 @@
 package com.zjc.sagas.service.impl;
 
 
+import com.zjc.sagas.dao.SagasProcessFlowDao;
 import com.zjc.sagas.dao.SagasProcessOrderHistoryDao;
 import com.zjc.sagas.enums.ProcessStatusEnum;
 import com.zjc.sagas.model.SagasProcessOrderHistory;
 import com.zjc.sagas.query.SagasProcessOrderHistoryQuery;
 import com.zjc.sagas.service.SagasProcessOrderHistoryService;
+import com.zjc.sagas.utils.BeanCopyUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -21,18 +23,20 @@ public class SagasProcessOrderHistoryServiceImpl implements SagasProcessOrderHis
 
     @Resource
     private SagasProcessOrderHistoryDao SagasProcessOrderHistoryDao;
+    @Resource
+    private SagasProcessFlowDao sagasProcessFlowDao;
 
 
     /**
      * 插入处理
-     * @param SagasProcessOrderHistory
+     * @param sagasProcessOrderHistory
      * @return
      */
     @Override
-    public int insert(SagasProcessOrderHistory SagasProcessOrderHistory) {
-        Assert.notNull(SagasProcessOrderHistory, "插入对象为空");
-
-        return SagasProcessOrderHistoryDao.insert(SagasProcessOrderHistory);
+    public int insert(SagasProcessOrderHistory sagasProcessOrderHistory) {
+        Assert.notNull(sagasProcessOrderHistory, "插入对象为空");
+        sagasProcessFlowDao.insert(BeanCopyUtils.copy(sagasProcessOrderHistory));
+        return SagasProcessOrderHistoryDao.insert(sagasProcessOrderHistory);
     }
 
     /**
@@ -49,15 +53,15 @@ public class SagasProcessOrderHistoryServiceImpl implements SagasProcessOrderHis
 
     /**
      * 根据id更新处理
-     * @param SagasProcessOrderHistory
+     * @param sagasProcessOrderHistory
      * @return
      */
     @Override
-    public int updateByProcessNoAndStatus(SagasProcessOrderHistory SagasProcessOrderHistory,Integer status) {
-        Assert.notNull(SagasProcessOrderHistory, "更新对象为空");
-        Assert.notNull(SagasProcessOrderHistory.getProcessNo(), "更新对象id为空");
-
-        return SagasProcessOrderHistoryDao.updateById(SagasProcessOrderHistory,status);
+    public int updateByProcessNoAndStatus(SagasProcessOrderHistory sagasProcessOrderHistory,Integer status) {
+        Assert.notNull(sagasProcessOrderHistory, "更新对象为空");
+        Assert.notNull(sagasProcessOrderHistory.getProcessNo(), "更新对象id为空");
+        sagasProcessFlowDao.insert(BeanCopyUtils.copy(sagasProcessOrderHistory));
+        return SagasProcessOrderHistoryDao.updateById(sagasProcessOrderHistory,status);
     }
 
     /**
